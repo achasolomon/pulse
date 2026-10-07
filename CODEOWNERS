@@ -1,0 +1,28 @@
+# CODEOWNERS — per PULSE-ENG-001 section 67
+
+# Platform runtime
+/apps/api/src/platform/ @pulse/platform
+
+# Domain modules — one owner per domain (ARCH-001 section 6)
+/apps/api/src/modules/patient/ @pulse/clinical
+/apps/api/src/modules/encounter/ @pulse/clinical
+/apps/api/src/modules/clinical/ @pulse/clinical
+/apps/api/src/modules/nursing/ @pulse/clinical
+/apps/api/src/modules/laboratory/ @pulse/diagnostics
+/apps/api/src/modules/imaging/ @pulse/diagnostics
+/apps/api/src/modules/medication/ @pulse/pharmacy
+/apps/api/src/modules/inventory/ @pulse/operations
+/apps/api/src/modules/referral/ @pulse/network
+/apps/api/src/modules/revenue/ @pulse/operations
+/apps/api/src/modules/consent/ @pulse/governance
+/apps/api/src/modules/iam/ @pulse/platform
+/apps/api/src/modules/workflow/ @pulse/platform
+/apps/api/src/modules/documents/ @pulse/platform
+/apps/api/src/modules/terminology/ @pulse/platform
+/apps/api/src/modules/audit/ @pulse/governance
+
+# Shared contracts — changes need tech-lead review
+/packages/api-contracts/ @pulse/platform
+/packages/events/ @pulse/platform
+/infra/migrations/ @pulse/platform
+/docs/ADRs/ @pulse/tech-lead

@@ -1,0 +1,12 @@
+{
+  "name": "@pulse/testkit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "oxlint src/",
+    "test": "echo no tests yet"
+  }
+}
