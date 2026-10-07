@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Builds
+dist/
+build/
+.next/
+coverage/
+.turbo/
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local infrastructure
+docker-data/
+postgres-data/
+redis-data/
+
+# Secrets
+*.pem
+*.key
+*.crt
+
+# Temporary
+tmp/
+temp/
