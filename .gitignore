@@ -39,3 +39,9 @@ redis-data/
 # Temporary
 tmp/
 temp/
+
+# Miscellaneous
+agents.md
+AGENTS.md
+CLAUDE.md
+CODEOWNERS

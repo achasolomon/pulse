@@ -10,6 +10,9 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "boundaries": "turbo run boundaries",
+    "secrets": "node scripts/check-secrets.mjs",
+    "db:migrate": "pnpm --filter api exec node ../../scripts/db-migrate.mjs",
+    "db:migrate:dry": "node scripts/db-migrate.mjs --dry-run",
     "typecheck": "turbo run typecheck",
     "format": "prettier --write ."
   },
@@ -17,5 +20,8 @@
     "prettier": "^3.0.0",
     "turbo": "^2.0.0",
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "pg": "^8.23.1"
   }
 }
