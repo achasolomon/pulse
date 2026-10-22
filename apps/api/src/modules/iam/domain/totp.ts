@@ -13,8 +13,16 @@ export function newTotpSecret(): string {
 }
 
 export function otpauthUrl(secret: string, label: string, issuer = 'Pulse'): string {
+  // Authenticator apps require Base32; stored HMAC keys remain Base64.
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+  let bits = 0, value = 0, base32 = '';
+  for (const byte of Buffer.from(secret, 'base64')) {
+    value = (value << 8) | byte; bits += 8;
+    while (bits >= 5) { bits -= 5; base32 += alphabet[(value >>> bits) & 31]; }
+  }
+  if (bits) base32 += alphabet[(value << (5 - bits)) & 31];
   const params = new URLSearchParams({
-    secret: secret.replace(/=+$/, ''),
+    secret: base32,
     issuer,
     algorithm: 'SHA1',
     digits: String(DIGITS),

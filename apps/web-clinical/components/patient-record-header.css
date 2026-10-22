@@ -1,0 +1,71 @@
+.patient-record .record-context { padding: 0; overflow: visible; }
+.patient-banner { background: #fff; border-radius: 10px; padding: 10px 13px; }
+.patient-banner__top { display: flex; align-items: center; gap: 13px; min-width: 0; padding: 0 2px 10px; }
+.patient-banner__avatar { display: grid; place-items: center; flex: 0 0 50px; height: 50px; border-radius: 50%; background: #e9f3f0; border: 3px solid #f4f8f6; color: #0b7362; font-size: 20px; font-weight: 600; }
+.patient-banner__identity { flex: 1 1 350px; min-width: 0; }
+.patient-banner__name { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+.patient-banner__name h1 { margin: 0; font-size: clamp(20px, 1.6vw, 25px); line-height: 1.2; font-weight: 650; letter-spacing: -.035em; color: #122937; overflow-wrap: anywhere; }
+.patient-banner__badge { display: inline-flex; align-items: center; background: #daf1e8; color: #08654f; border-radius: 20px; padding: 5px 10px; font-size: 10px; line-height: 1.2; white-space: nowrap; }
+.patient-banner__badge--merged { background: #fff1d8; color: #82521a; }
+.patient-banner__demographics { display: flex; flex-wrap: wrap; gap: 7px 0; color: #536779; font-size: 11px; }
+.patient-banner__demographics > span { padding: 0 10px; border-left: 1px solid #e3eae8; }
+.patient-banner__demographics > span:first-child { border: 0; padding-left: 0; }
+.patient-banner__demographics strong { font-weight: 450; overflow-wrap: anywhere; }
+.patient-banner__context { display: flex; align-items: center; min-width: 0; gap: 0; }
+.patient-banner__context-item { display: flex; gap: 9px; align-items: center; border-left: 1px solid #e9efec; padding: 0 15px; min-width: 0; max-width: 200px; }
+.patient-banner__context-icon { background: #eff7f3; color: #087161; display: grid; place-items: center; border-radius: 6px; padding: 6px; flex-shrink: 0; }
+.patient-banner__context-item strong { font-size: 10px; font-weight: 550; line-height: 1.5; color: #253b4d; display: block; overflow-wrap: anywhere; }
+.patient-banner__context-item small { font-size: 10px; color: #7b8a97; display: block; margin-top: 3px; }
+.patient-banner__visit-status strong { color: #086e5b; }
+.patient-banner__status-dot { width: 8px; height: 8px; border-radius: 50%; background: #0b7b65; flex-shrink: 0; }
+.patient-banner__actions { position: relative; flex-shrink: 0; align-self: center; }
+.patient-banner__actions summary { list-style: none; display: flex; align-items: center; gap: 18px; background: #dfefe9; color: #075f51; border: 1px solid #c8e5da; border-radius: 6px; padding: 8px 13px; font-size: 11px; cursor: pointer; }
+.patient-banner__actions summary::-webkit-details-marker { display: none; }
+.patient-banner__action-menu { position: absolute; top: calc(100% + 8px); right: 0; width: 210px; border: 1px solid #dfe9e4; border-radius: 9px; background: white; padding: 5px; box-shadow: 0 8px 28px #183d3020; z-index: 12; }
+.patient-banner__action-menu button { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; border: 0; border-radius: 5px; background: white; color: #304958; font: inherit; font-size: 12px; padding: 10px; cursor: pointer; }
+.patient-banner__action-menu button:hover { background: #eff7f3; }
+.patient-banner__safety { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid #eef1ef; border-radius: 8px; overflow: hidden; background: #fafbfaff; }
+.patient-banner__tile { display: flex; align-items: flex-start; gap: 12px; text-align: left; border: 0; border-left: 1px solid #e7ece9; padding: 12px 14px; background: transparent; color: #2e4354; min-width: 0; cursor: pointer; font: inherit; }
+.patient-banner__tile:first-child { border-left: 0; }
+.patient-banner__tile:hover { background: #f0f6f3; }
+.patient-banner__tile-icon { display: grid; place-items: center; flex-shrink: 0; border-radius: 7px; width: 34px; height: 34px; background: #edf2ef; color: #54716a; }
+.patient-banner__tile > span:last-child { display: grid; gap: 3px; min-width: 0; }
+.patient-banner__tile strong { font-size: 10px; font-weight: 600; color: #203746; }
+.patient-banner__tile > span > span { font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; }
+.patient-banner__tile small { color: #7c8994; font-size: 10px; line-height: 1.4; }
+.patient-banner__tile--allergy { background: #fff8f5; }
+.patient-banner__tile--allergy strong { color: #a9412f; }
+.patient-banner__tile--allergy .patient-banner__tile-icon { background: #ffebe5; color: #b74d35; }
+.patient-banner button:focus-visible, .patient-banner summary:focus-visible { outline: 2px solid #168b7c; outline-offset: 3px; }
+@media(max-width:1350px) { .patient-banner__top { flex-wrap: wrap; gap: 12px; } .patient-banner__identity { flex-basis: calc(100% - 220px); } .patient-banner__context { order: 4; flex: 1 0 100%; padding-top: 12px; border-top: 1px solid #eef2ef; } .patient-banner__context-item { max-width: none; flex: 1; } .patient-banner__context-item:first-child { border-left: 0; padding-left: 0; } }
+@media(max-width:600px) { .patient-record .record-context { padding: 0; } .patient-banner { padding: 12px; } .patient-banner__top { gap: 10px; padding-bottom: 12px; } .patient-banner__avatar { flex-basis: 45px; height: 45px; border-width: 3px; font-size: 17px; } .patient-banner__identity { flex-basis: calc(100% - 60px); } .patient-banner__name { gap: 6px; margin-bottom: 7px; } .patient-banner__name h1 { font-size: 18px; } .patient-banner__badge { padding: 3px 7px; font-size: 9px; } .patient-banner__demographics { font-size: 10px; gap: 6px 0; } .patient-banner__demographics > span { padding: 0 6px; } .patient-banner__actions { order: 5; margin-left: auto; } .patient-banner__context { padding-top: 9px; flex-wrap: wrap; gap: 10px 0; } .patient-banner__context-item { padding: 0 9px; flex-basis: 50%; } .patient-banner__context-item strong, .patient-banner__context-item small { font-size: 9px; } .patient-banner__context-icon { padding: 4px; } .patient-banner__visit-status { flex-basis: 100%; border: 0; padding-left: 0; } .patient-banner__safety { grid-template-columns: 1fr; } .patient-banner__tile { padding: 8px 10px; border: 0; border-top: 1px solid #e7ece9; gap: 9px; } .patient-banner__tile:first-child { border-top: 0; } .patient-banner__tile > span:last-child { grid-template-columns: 1fr; gap: 2px; } .patient-banner__tile small { display: none; } .patient-banner__tile-icon { width: 28px; height: 28px; } }
+/* Keep chart controls small; condense the sticky context once its sentinel leaves view. */
+.record-header-sentinel { height: 1px; margin-bottom: -1px; pointer-events: none; }
+.patient-record .record-breadcrumb { margin-bottom: 8px; min-height: 24px; font-size: 11px; gap: 8px; }
+.patient-record .record-refreshed { gap: 6px; font-size: 10px; }
+.patient-record .record-refreshed button { width: 24px; height: 24px; border-radius: 5px; font-size: 16px; }
+.patient-record .record-navigation { margin: 0 0 10px; gap: 20px; }
+.patient-record .record-navigation button { padding: 10px 0 8px; font-size: 11px; border-bottom-width: 2px; }
+.patient-record .patient-banner__tile { padding-top: 8px; padding-bottom: 8px; }
+.patient-record .patient-banner__tile small { display: none; }
+.patient-record .patient-banner__name { margin-bottom: 7px; }
+.patient-record--compact .patient-banner { padding: 7px 12px; }
+.patient-record--compact .patient-banner__top { flex-wrap: nowrap; padding-bottom: 6px; gap: 10px; }
+.patient-record--compact .patient-banner__avatar { flex-basis: 34px; height: 34px; font-size: 13px; border-width: 2px; }
+.patient-record--compact .patient-banner__identity { flex: 1 1 auto; }
+.patient-record--compact .patient-banner__name { margin-bottom: 3px; gap: 8px; }
+.patient-record--compact .patient-banner__name h1 { font-size: 16px; }
+.patient-record--compact .patient-banner__badge { font-size: 9px; padding: 3px 7px; }
+.patient-record--compact .patient-banner__context { display: none; }
+.patient-record--compact .patient-banner__demographics > span:last-child { display: none; }
+.patient-record--compact .patient-banner__demographics { font-size: 10px; }
+.patient-record--compact .patient-banner__actions { order: initial; }
+.patient-record--compact .patient-banner__actions summary { padding: 6px 10px; }
+.patient-record--compact .patient-banner__safety { display: block; border: 0; border-radius: 5px; }
+.patient-record--compact .patient-banner__tile:not(:first-child) { display: none; }
+.patient-record--compact .patient-banner__tile:first-child { width: 100%; padding: 4px 8px; gap: 8px; align-items: center; }
+.patient-record--compact .patient-banner__tile-icon { width: 21px; height: 21px; }
+.patient-record--compact .patient-banner__tile-icon svg { width: 15px; height: 15px; }
+.patient-record--compact .patient-banner__tile > span:last-child { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 9px; }
+.patient-record--compact .patient-banner__tile > span > span { font-size: 10px; }
+@media(max-width:600px) { .patient-record .record-breadcrumb { margin-bottom: 6px; font-size: 10px; } .patient-record .record-refreshed { font-size: 9px; } .patient-record .record-navigation { margin-bottom: 8px; gap: 18px; } .patient-record .patient-banner__top { gap: 8px; padding-bottom: 8px; } .patient-record .patient-banner__context { padding-top: 7px; } .patient-record .patient-banner__actions { margin-top: 0; } .patient-record--compact .patient-banner__top { flex-wrap: nowrap; } .patient-record--compact .patient-banner__identity { flex-basis: auto; } .patient-record--compact .patient-banner__name h1 { font-size: 14px; } .patient-record--compact .patient-banner__badge { display: none; } .patient-record--compact .patient-banner__actions summary { padding: 6px 8px; gap: 8px; } .patient-record--compact .patient-banner { padding: 6px 9px; } }

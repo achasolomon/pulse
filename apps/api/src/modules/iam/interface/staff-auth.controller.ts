@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Get,
+  Header,
   Headers,
   Param,
   ParseUUIDPipe,
@@ -14,6 +16,7 @@ import { TenantContextGuard } from '../../../platform/common/guards/tenant-conte
 import { AuthorizationGuard } from './authorization.guard.js';
 import { RequirePrivilege } from './require-privilege.decorator.js';
 import { StaffAuthService } from '../application/staff-auth.service.js';
+import { StaffContextService } from '../application/staff-context.service.js';
 import { IsOptional, IsString, IsUUID, Length } from 'class-validator';
 
 export class RegisterStaffDto {
@@ -70,7 +73,15 @@ export class LinkIdentityDto {
  */
 @Controller('iam/auth')
 export class StaffAuthController {
-  constructor(private readonly auth: StaffAuthService) {}
+  constructor(private readonly auth: StaffAuthService, private readonly contexts: StaffContextService) {}
+
+  // Self-scoped session verification solves the facility-selection bootstrap
+  // without granting chart or administrative resource access.
+  @Get('me')
+  @Header('Cache-Control', 'no-store')
+  me(@Headers('authorization') authorization?: string) {
+    return this.contexts.self(authorization);
+  }
 
   @Post('register')
   @UseGuards(TenantContextGuard, AuthorizationGuard)

@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  ForbiddenException,
+  NotFoundException,
   Inject,
   Param,
   ParseUUIDPipe,
@@ -15,11 +17,21 @@ import type { RequestContext } from '../../../platform/common/types/request-cont
 import { AuthorizationGuard } from '../../iam/interface/authorization.guard.js';
 import { RequirePrivilege } from '../../iam/interface/require-privilege.decorator.js';
 import {
+  PATIENT_REPOSITORY,
+  type PatientRepository,
+} from '../../patient/domain/patient.repository.js';
+import {
   ENCOUNTER_REPOSITORY,
   type EncounterRepository,
 } from '../domain/encounter.repository.js';
 import { EncounterService } from '../application/encounter.service.js';
-import { AdmitDto, DischargeDto, OpenEncounterDto, SetCoverageDto, TransferDto } from './dto.js';
+import {
+  AdmitDto,
+  DischargeDto,
+  OpenEncounterDto,
+  SetCoverageDto,
+  TransferDto,
+} from './dto.js';
 
 /** Encounter & ADT endpoints (EPIC-06). All tenant-scoped + audited. */
 @Controller('encounters')
@@ -27,13 +39,28 @@ import { AdmitDto, DischargeDto, OpenEncounterDto, SetCoverageDto, TransferDto }
 export class EncounterController {
   constructor(
     private readonly encounters: EncounterService,
+    @Inject(PATIENT_REPOSITORY) private readonly patients: PatientRepository,
     @Inject(ENCOUNTER_REPOSITORY) private readonly repo: EncounterRepository,
   ) {}
 
   @Post()
   @RequirePrivilege({ action: 'write', resourceType: 'encounter' })
   @Audited({ action: 'encounter.open', resourceType: 'encounter' })
-  open(@Body() dto: OpenEncounterDto, @CurrentContext() ctx?: RequestContext) {
+  async open(
+    @Body() dto: OpenEncounterDto,
+    @CurrentContext() ctx?: RequestContext,
+  ) {
+    if (dto.facilityId !== ctx?.facilityId)
+      throw new ForbiddenException({
+        code: 'FACILITY_MISMATCH',
+        message: 'Use the selected facility',
+      });
+    const patient = await this.patients.findById(dto.patientId);
+    if (!patient || patient.facilityId !== ctx.facilityId)
+      throw new ForbiddenException({
+        code: 'PATIENT_ACCESS_DENIED',
+        message: 'Select a patient in this facility',
+      });
     return this.encounters.open({
       patientId: dto.patientId,
       facilityId: dto.facilityId,
@@ -44,13 +71,26 @@ export class EncounterController {
 
   @Get(':id')
   @RequirePrivilege({ action: 'read', resourceType: 'encounter' })
-  get(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.repo.findById(id);
+  async get(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @CurrentContext() ctx?: RequestContext,
+  ) {
+    const encounter = await this.repo.findById(id);
+    if (!encounter || encounter.facilityId !== ctx?.facilityId)
+      throw new NotFoundException({
+        code: 'ENCOUNTER_NOT_FOUND',
+        message: 'Encounter is unavailable in this facility',
+      });
+    return encounter;
   }
 
   @Get(':id/history')
   @RequirePrivilege({ action: 'read', resourceType: 'encounter' })
-  history(@Param('id', new ParseUUIDPipe()) id: string) {
+  async history(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @CurrentContext() ctx?: RequestContext,
+  ) {
+    await this.get(id, ctx);
     return this.repo.listHistory(id);
   }
 

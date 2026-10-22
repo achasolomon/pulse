@@ -51,6 +51,7 @@ import { SecureExampleController } from './modules/iam/interface/secure-example.
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      ignoreEnvFile: process.env.NODE_ENV === 'test',
       load: [configuration],
     }),
     // Abuse protection (SEC-001): generous default; strict overrides on

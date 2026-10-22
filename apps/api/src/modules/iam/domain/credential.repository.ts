@@ -16,6 +16,7 @@ export interface StaffSession {
   credentialId: string;
   personId?: string;
   scopes: string[];
+  expiresAt: Date;
 }
 
 export interface CredentialRepository {

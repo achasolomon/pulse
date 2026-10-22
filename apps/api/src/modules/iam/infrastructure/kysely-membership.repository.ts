@@ -28,6 +28,10 @@ export class KyselyMembershipRepository implements MembershipRepository {
       ])
       .where('person_id', '=', personId)
       .where('facility_id', '=', facilityId)
+      .where((eb) => eb.exists(eb.selectFrom('org.facility')
+        .select('id')
+        .whereRef('org.facility.id', '=', 'iam.membership.facility_id')
+        .whereRef('org.facility.organization_id', '=', 'iam.membership.organization_id')))
       .where((eb) =>
         eb.or([
           eb('effective_from', 'is', null),

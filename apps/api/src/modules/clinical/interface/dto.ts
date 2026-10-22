@@ -1,6 +1,23 @@
-import { IsIn, IsNumber, IsOptional, IsString, IsUUID, Length } from 'class-validator';
+import {
+  ArrayMinSize,
+  ArrayMaxSize,
+  IsArray,
+  ValidateNested,
+  IsIn,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Length,
+} from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class RecordVitalsDto {
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(100)
+  @ValidateNested({ each: true })
+  @Type(() => VitalDto)
   observations!: VitalDto[];
 }
 

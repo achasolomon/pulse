@@ -6,6 +6,10 @@ import {
   ParseUUIDPipe,
   Post,
   UseGuards,
+  Injectable,
+  ConflictException,
+  type CanActivate,
+  type ExecutionContext,
 } from '@nestjs/common';
 import { Audited } from '../../../platform/audit/audited.decorator.js';
 import { CurrentContext } from '../../../platform/common/decorators/context.js';
@@ -16,9 +20,13 @@ import { RequirePrivilege } from '../../iam/interface/require-privilege.decorato
 import { ImagingService } from '../application/imaging.service.js';
 import { AcquireDto, CancelImagingDto, ImagingReportDto, PlaceImagingOrderDto } from './dto.js';
 
+@Injectable()
+class LegacyImagingStaffGuard implements CanActivate {
+  canActivate(c:ExecutionContext){if(c.switchToHttp().getRequest<{headers:{authorization?:string}}>().headers.authorization?.startsWith('Bearer staff_'))throw new ConflictException({code:'STAFF_IMAGING_WORKFLOW_REQUIRED',message:'Use the scoped staff imaging workflow.'});return true;}
+}
 /** Imaging endpoints (EPIC-11). All tenant-scoped + audited. */
 @Controller('imaging')
-@UseGuards(TenantContextGuard, AuthorizationGuard)
+@UseGuards(TenantContextGuard, AuthorizationGuard,LegacyImagingStaffGuard)
 export class ImagingController {
   constructor(private readonly imaging: ImagingService) {}
 

@@ -2,6 +2,10 @@ import {
   Body,
   Controller,
   Get,
+  Header,
+  Headers,
+  ForbiddenException,
+  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -15,6 +19,7 @@ import type { RequestContext } from '../../../platform/common/types/request-cont
 import { AuthorizationGuard } from '../../iam/interface/authorization.guard.js';
 import { RequirePrivilege } from '../../iam/interface/require-privilege.decorator.js';
 import { PatientService } from '../application/patient.service.js';
+import { StaffPatientReadService } from '../application/staff-patient-read.service.js';
 import type { PatientRepository } from '../domain/patient.repository.js';
 import { PATIENT_REPOSITORY } from '../domain/patient.repository.js';
 import { Inject } from '@nestjs/common';
@@ -29,13 +34,22 @@ import { MergePatientDto, RegisterPatientDto, SetGuarantorDto } from './dto.js';
 export class PatientController {
   constructor(
     private readonly patients: PatientService,
+    private readonly reads: StaffPatientReadService,
     @Inject(PATIENT_REPOSITORY) private readonly repo: PatientRepository,
   ) {}
 
   @Post()
   @RequirePrivilege({ action: 'write', resourceType: 'patient' })
   @Audited({ action: 'patient.register', resourceType: 'patient' })
-  register(@Body() dto: RegisterPatientDto, @CurrentContext() ctx?: RequestContext) {
+  register(
+    @Body() dto: RegisterPatientDto,
+    @CurrentContext() ctx?: RequestContext,
+  ) {
+    if (dto.facilityId !== ctx?.facilityId)
+      throw new ForbiddenException({
+        code: 'FACILITY_MISMATCH',
+        message: 'Use the selected facility',
+      });
     return this.patients.register({
       familyName: dto.familyName,
       givenName: dto.givenName,
@@ -48,37 +62,68 @@ export class PatientController {
   }
 
   @Get('search')
+  @Header('Cache-Control', 'no-store')
   @RequirePrivilege({ action: 'read', resourceType: 'patient' })
   search(
     @Query('q') q: string,
     @Query('facilityId') facilityId: string,
+    @CurrentContext() ctx?: RequestContext,
   ) {
-    return this.repo.search({ query: q ?? '', facilityId, limit: 25 });
+    if (facilityId && facilityId !== ctx?.facilityId)
+      throw new ForbiddenException({
+        code: 'FACILITY_MISMATCH',
+        message: 'Use the selected facility',
+      });
+    return this.repo.search({
+      query: (q ?? '').slice(0, 100),
+      facilityId: ctx!.facilityId!,
+      limit: 25,
+    });
   }
 
   @Get(':id/summary')
+  @Header('Cache-Control', 'no-store')
   @RequirePrivilege({ action: 'read', resourceType: 'patient' })
-  summary(@Param('id', new ParseUUIDPipe()) id: string) {
+  async summary(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Headers('authorization') authorization?: string,
+    @CurrentContext() ctx?: RequestContext,
+  ) {
+    const scope = await this.reads.scope(
+      authorization,
+      ctx?.facilityId,
+      ctx?.tenantId,
+    );
+    await this.reads.identity(scope, id);
     return this.repo.findById(id);
   }
 
   @Get(':id/duplicates')
   @RequirePrivilege({ action: 'read', resourceType: 'patient' })
-  duplicates(
+  async duplicates(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Query('facilityId') facilityId: string,
+    @CurrentContext() ctx?: RequestContext,
   ) {
-    return this.patients.duplicates(id, facilityId);
+    if (facilityId && facilityId !== ctx?.facilityId)
+      throw new ForbiddenException({
+        code: 'FACILITY_MISMATCH',
+        message: 'Use the selected facility',
+      });
+    await this.scopedRecord(id, ctx?.facilityId);
+    return this.patients.duplicates(id, ctx!.facilityId!);
   }
 
   @Post(':id/merge')
   @RequirePrivilege({ action: 'merge', resourceType: 'patient' })
   @Audited({ action: 'patient.merge', resourceType: 'patient' })
-  merge(
+  async merge(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: MergePatientDto,
     @CurrentContext() ctx?: RequestContext,
   ) {
+    await this.scopedRecord(id, ctx?.facilityId);
+    await this.scopedRecord(dto.survivorId, ctx?.facilityId);
     return this.patients.merge({
       survivorId: dto.survivorId,
       duplicateId: id,
@@ -90,15 +135,25 @@ export class PatientController {
   @Post(':id/guarantor')
   @RequirePrivilege({ action: 'manage', resourceType: 'patient' })
   @Audited({ action: 'patient.guarantor_set', resourceType: 'patient' })
-  guarantor(
+  async guarantor(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: SetGuarantorDto,
     @CurrentContext() ctx?: RequestContext,
   ) {
+    await this.scopedRecord(id, ctx?.facilityId);
     return this.patients.setGuarantor(id, {
       name: dto.name,
       ...(dto.contact ? { contact: dto.contact } : {}),
       correlationId: ctx?.correlationId,
     });
+  }
+  private async scopedRecord(id: string, facilityId?: string) {
+    const patient = await this.repo.findById(id);
+    if (!patient || patient.facilityId !== facilityId)
+      throw new NotFoundException({
+        code: 'PATIENT_NOT_FOUND',
+        message: 'Patient is unavailable in this facility',
+      });
+    return patient;
   }
 }

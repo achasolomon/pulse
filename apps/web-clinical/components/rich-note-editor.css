@@ -1,0 +1,21 @@
+.rich-note-editor { border:1px solid #dce7df; border-radius:6px; background:#fff; overflow:hidden; }
+.rich-note-toolbar { display:flex; align-items:center; flex-wrap:wrap; gap:3px; padding:6px; border-bottom:1px solid #e4ece7; background:#fafcfb; }
+.rich-note-toolbar button { display:grid; place-items:center; min-width:28px; height:28px; padding:4px; border:1px solid transparent; border-radius:4px; background:none; font:inherit; font-size:12px; color:#617b6b; cursor:pointer; }
+.rich-note-toolbar button[aria-pressed=true] { background:#dcefe4; color:#096a48; border-color:#bfdccb; }
+.rich-note-toolbar button:hover:not(:disabled) { background:#e9f3ed; }
+.rich-note-toolbar button:disabled { opacity:.35; cursor:default; }
+.rich-note-toolbar select { height:28px; min-width:104px; font:inherit; font-size:10px; color:#5b7666; background:#fff; border:1px solid #dce7df; border-radius:4px; }
+.rich-note-toolbar__divider { height:18px; width:1px; background:#dfe8e2; margin:0 3px; }
+.rich-note-editor .tiptap { min-height:210px; padding:13px; outline:none; font-size:13px; line-height:1.8; color:#2e4938; white-space:pre-wrap; overflow-wrap:anywhere; }
+.rich-note-editor:focus-within { border-color:#5d9b7b; box-shadow:0 0 0 2px #e2f0e7; }
+.tiptap p, .note-rich-view p { margin:0 0 9px; }
+.tiptap h1, .note-rich-view h2 { font-size:20px; margin:12px 0 8px; }
+.tiptap h2, .note-rich-view h3 { font-size:17px; margin:12px 0 8px; }
+.tiptap h3, .note-rich-view h4 { font-size:15px; margin:10px 0 7px; }
+.tiptap ul, .tiptap ol, .note-rich-view ul, .note-rich-view ol { padding-left:24px; margin:7px 0 10px; }
+.tiptap li p, .note-rich-view li p { margin:0; }
+.tiptap blockquote, .note-rich-view blockquote { border-left:3px solid #b6d5c3; margin:10px 0; padding-left:12px; color:#6a8271; }
+.note-rich-view { font-size:13px; line-height:1.8; white-space:normal; overflow-wrap:anywhere; }
+.note-rich-view h2, .note-rich-view h3, .note-rich-view h4 { color:#355641; }
+.note-field > .rich-note-editor { display:block; }
+@media(max-width:700px) { .rich-note-toolbar button { min-width:32px; height:32px; } .rich-note-editor .tiptap { min-height:200px; font-size:16px; } }

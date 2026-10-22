@@ -1,0 +1,72 @@
+.patient-record .latest-vitals { padding: 14px 15px 10px; }
+.latest-vitals__heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.latest-vitals__heading > div { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; }
+.patient-record .latest-vitals h2 { font-size: 13px; margin: 0; gap: 8px; }
+.latest-vitals__updated { font-size: 10px; color: #778793; }
+.latest-vitals__updated time { margin-left: 4px; }
+.latest-vitals__heading > button { display: inline-flex; align-items: center; gap: 10px; flex-shrink: 0; border: 0; background: transparent; padding: 4px 0 4px 5px; color: #087260; font: inherit; font-size: 10px; cursor: pointer; }
+.latest-vitals__strip { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin: 0; }
+.latest-vitals__metric { background: #f5f9f7; border: 1px solid #e8f0ec; border-radius: 7px; padding: 10px 8px; min-width: 0; }
+.latest-vitals__metric dt { display: flex; align-items: center; gap: 5px; margin-bottom: 10px; min-height: 24px; color: #697d86; font-size: 9px; line-height: 1.35; }
+.latest-vitals__metric-icon { color: #087363; flex-shrink: 0; display: grid; place-items: center; }
+.latest-vitals__metric dd { margin: 0; display: flex; align-items: baseline; flex-wrap: wrap; gap: 3px; min-height: 26px; color: #132d3a; }
+.latest-vitals__metric strong { font-size: clamp(17px, 1.4vw, 21px); letter-spacing: -.035em; line-height: 1.25; font-weight: 600; overflow-wrap: anywhere; }
+.latest-vitals__unit { color: #657987; font-size: 9px; }
+.latest-vitals__metric > small, .latest-vitals__metric > time { display: block; font-size: 9px; line-height: 1.5; color: #87958f; margin-top: 5px; }
+.latest-vitals__metric--missing { background: #fafcfb; border-color: #edf2ef; }
+.latest-vitals__metric--missing .latest-vitals__metric-icon { color: #93aaa1; }
+.latest-vitals__metric--missing strong { color: #8c9b96; font-weight: 450; }
+.latest-vitals__footer { display: flex; align-items: baseline; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; margin-top: 9px; }
+.latest-vitals__footer > p { color: #81928b; font-size: 9px; line-height: 1.6; margin: 0; }
+.latest-vitals__details { display: contents; }
+.latest-vitals__details:not([open]) > div { display: none; }
+.latest-vitals__details summary { color: #5b7f72; font-size: 10px; cursor: pointer; }
+.latest-vitals__details > div { width: 100%; border-top: 1px solid #e7eee9; margin-top: 4px; padding-top: 9px; }
+.latest-vitals__details p { font-size: 10px; line-height: 1.6; color: #7c8c84; margin: 0 0 9px; }
+.latest-vitals__details ul { list-style: none; padding: 0; margin: 0; }
+.latest-vitals__details li { display: grid; grid-template-columns: 1fr 1fr 1.25fr 1fr; gap: 10px; align-items: baseline; padding: 8px 0; border-bottom: 1px solid #f0f4f1; font-size: 10px; color: #60766e; }
+.latest-vitals__details li:last-child { border: 0; }
+.latest-vitals__details li strong { font-weight: 550; color: #334f44; }
+.latest-vitals__details li small { font-size: 10px; overflow-wrap: anywhere; }
+.latest-vitals__restricted { color: #74867d; font-size: 12px; margin: 5px 0; }
+.latest-vitals button:focus-visible, .latest-vitals summary:focus-visible { outline: 2px solid #168b7c; outline-offset: 3px; }
+@media(max-width:1150px) and (min-width:901px) { .latest-vitals__strip { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media(max-width:600px) { .patient-record .latest-vitals { padding: 13px; } .latest-vitals__strip { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 7px; } .latest-vitals__metric { padding: 10px; } .latest-vitals__metric dt { min-height: 20px; font-size: 10px; margin-bottom: 7px; gap: 7px; } .latest-vitals__metric strong { font-size: 22px; } .latest-vitals__metric dd { flex-wrap: nowrap; } .latest-vitals__metric:first-child { grid-column: 1 / -1; } .latest-vitals__heading { align-items: flex-start; gap: 8px; } .latest-vitals__heading > div { gap: 5px; } .latest-vitals__updated { font-size: 9px; } .latest-vitals__details li { grid-template-columns: 1fr 1fr; gap: 5px 10px; } }
+.latest-vitals__review { display:flex; align-items:center; gap:7px; font-size:10px; color:#9b4a25; margin:0 0 9px; }
+.latest-vitals__review > span { margin-left:auto; color:#849087; font-size:9px; }
+.latest-vitals__metric--urgent { background:#fff0ef; border-color:#f3cdc8; }
+.latest-vitals__metric--urgent dt, .latest-vitals__metric--urgent strong, .latest-vitals__metric--urgent .latest-vitals__unit, .latest-vitals__metric--urgent .latest-vitals__metric-icon { color:#ac2d24; }
+.latest-vitals__metric--attention { background:#fff8e9; border-color:#f0dfb7; }
+.latest-vitals__metric--attention dt, .latest-vitals__metric--attention strong, .latest-vitals__metric--attention .latest-vitals__metric-icon { color:#936021; }
+.latest-vitals__flag { display:inline-flex; align-items:center; gap:4px; font-size:8px; line-height:1.4; padding:3px 5px; margin-top:6px; border-radius:9px; color:#72837b; background:#eaf0ec; max-width:100%; }
+.latest-vitals__flag--urgent { color:#a82d24; background:#fbd8d4; font-weight:600; }
+.latest-vitals__flag--attention { color:#875215; background:#fae6b7; font-weight:600; }
+.latest-vitals__flag > span { font-weight:700; }
+.latest-vitals__reason { grid-column:1 / -1; border-left:2px solid #dbe7df; padding:3px 9px; }
+.latest-vitals__reason p { margin:4px 0; }
+.latest-vitals__reason a { color:#087363; }
+.physiology-summary { margin-top:12px; padding-top:12px; border-top:1px solid #e6eee8; }
+.physiology-summary__heading { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:9px; }
+.physiology-summary__heading h3 { font-size:11px; margin:0; color:#28463b; }
+.physiology-summary__heading > span { font-size:9px; color:#84938c; }
+.physiology-summary > dl { margin:0; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:7px; }
+.physiology-summary__item { min-width:0; padding:10px; border:1px solid #e6eee8; border-radius:6px; background:#fafcfb; }
+.physiology-summary__item dt { font-size:10px; color:#697e73; min-height:25px; }
+.physiology-summary__item dd { margin:5px 0 0; font-size:20px; font-weight:550; color:#23483a; display:flex; gap:4px; flex-wrap:wrap; align-items:baseline; }
+.physiology-summary__item dd small { font-size:9px; font-weight:400; }
+.physiology-summary__item--attention { border-color:#ecd4a3; background:#fff9ed; }
+.physiology-summary__item > details { font-size:9px; color:#647d70; margin-top:8px; }
+.physiology-summary__item summary { cursor:pointer; }
+.physiology-summary__item details p { line-height:1.6; overflow-wrap:anywhere; }
+.physiology-summary__item details small { overflow-wrap:anywhere; }
+.physiology-summary__item details a { color:#087363; }
+@media(max-width:900px) { .physiology-summary > dl { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media(max-width:600px) { .physiology-summary > dl { grid-template-columns:repeat(2,minmax(0,1fr)); } .physiology-summary__heading { flex-wrap:wrap; } }
+@media(max-width:600px) { .latest-vitals__flag { font-size:9px; } .latest-vitals__review { flex-wrap:wrap; } }
+.physiology-summary__missing { margin-top:8px; font-size:10px; color:#74877b; }
+.physiology-summary__missing summary { cursor:pointer; }
+.physiology-summary__missing ul { list-style:none; padding:0; margin:10px 0 0; }
+.physiology-summary__missing li { display:grid; grid-template-columns:140px 1fr; gap:10px; border-top:1px solid #edf2ee; padding:8px 0; line-height:1.6; }
+@media(max-width:600px) { .physiology-summary__missing li { grid-template-columns:1fr; gap:2px; } }
+.physiology-summary__basis { display:block; font-size:9px; color:#859087; margin-top:5px; }
+.latest-vitals__metric .latest-vitals__reference-note { font-size:8px; line-height:1.5; color:#74877b; }

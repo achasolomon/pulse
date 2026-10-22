@@ -1,27 +1,20 @@
 import type { Metadata } from 'next';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/plus-jakarta-sans';
+import '@pulse/ui/styles.css';
 import './globals.css';
+import '../components/patient-record-header.css';
+import '../components/current-encounter.css';
+import '../components/latest-vital-signs.css';
+import '../components/clinical-summary-cards.css';
+import '../components/note-workspace.css';
+import '../components/rich-note-editor.css';
+import { pulseTokensCss } from '@pulse/ui';
 
 export const metadata: Metadata = {
   title: 'Pulse Clinical',
-  description: 'Pulse Connected Care — clinical operations shell',
+  description: 'Pulse Connected Care — clinical operations',
 };
-
-const NAV = [
-  'Dashboard',
-  'Patients',
-  'Appointments',
-  'Encounters',
-  'Clinical',
-  'Laboratory',
-  'Imaging',
-  'Medications',
-  'Nursing',
-  'Referrals',
-  'Inventory',
-  'Billing',
-  'Reports',
-  'Administration',
-];
 
 export default function RootLayout({
   children,
@@ -30,32 +23,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <div className="shell">
-          <aside className="sidebar">
-            <h1>Pulse</h1>
-            <nav>
-              {NAV.map((item, i) => (
-                <a key={item} href="#" className={i === 0 ? 'active' : ''}>
-                  {item}
-                </a>
-              ))}
-            </nav>
-          </aside>
-          <div className="main">
-            <header className="topbar">
-              <input
-                type="search"
-                placeholder="Search patients, encounters, staff… (Ctrl+K)"
-                aria-label="Global search"
-                disabled
-              />
-              <span className="facility">City General Hospital · Main Facility</span>
-            </header>
-            {children}
-          </div>
-        </div>
-      </body>
+      <head>
+        <style data-pulse-tokens dangerouslySetInnerHTML={{ __html: pulseTokensCss }} />
+      </head>
+      <body>{children}</body>
     </html>
   );
 }

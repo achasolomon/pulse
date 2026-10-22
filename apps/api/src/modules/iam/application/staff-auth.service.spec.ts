@@ -103,6 +103,7 @@ describe('StaffAuthService (unit, fake repo)', () => {
         credentialId: 'cred1',
         personId: 'person-1',
         scopes: ['staff'],
+        expiresAt: new Date(Date.now() + 60_000),
       }),
       revokeSession: async (id: string) => {
         revoked.push(id);

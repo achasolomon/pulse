@@ -75,15 +75,17 @@ export class StaffAuthService {
       }
     }
     const pair = newSessionToken();
+    const expiresAt = new Date(Date.now() + STAFF_SESSION_TTL_MS);
     const session = await this.repo.createSession({
       credentialId: credential.id,
       ...(credential.personId ? { personId: credential.personId } : {}),
       tokenHash: pair.hash,
-      expiresAt: new Date(Date.now() + STAFF_SESSION_TTL_MS),
+      expiresAt,
     });
     return {
       token: pair.token,
       sessionId: session.id,
+      expiresAt: expiresAt.toISOString(),
       ...(credential.personId ? { personId: credential.personId } : {}),
     };
   }

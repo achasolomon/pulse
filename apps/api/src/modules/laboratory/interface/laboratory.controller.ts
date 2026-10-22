@@ -8,6 +8,10 @@ import {
   Query,
   Inject,
   UseGuards,
+  Injectable,
+  ConflictException,
+  type CanActivate,
+  type ExecutionContext,
 } from '@nestjs/common';
 import { Audited } from '../../../platform/audit/audited.decorator.js';
 import { CurrentContext } from '../../../platform/common/decorators/context.js';
@@ -22,9 +26,19 @@ import {
 } from '../domain/lab.repository.js';
 import { AckDto, CancelOrderDto, CollectDto, DefineTestDto, PlaceOrderDto, ResultDto, VerifyDto } from './dto.js';
 
+/** Legacy demo/integration adapters must not bypass scoped staff laboratory workflows. */
+@Injectable()
+class LegacyLabStaffGuard implements CanActivate {
+  canActivate(context:ExecutionContext){
+    const req=context.switchToHttp().getRequest<{headers:{authorization?:string}}>();
+    if(req.headers.authorization?.startsWith('Bearer staff_'))throw new ConflictException({code:'STAFF_LAB_WORKFLOW_REQUIRED',message:'Use the scoped staff laboratory workflow. Legacy laboratory routes are unavailable to staff sessions.'});
+    return true;
+  }
+}
+
 /** Laboratory endpoints (EPIC-10). All tenant-scoped + audited. */
 @Controller('lab')
-@UseGuards(TenantContextGuard, AuthorizationGuard)
+@UseGuards(TenantContextGuard, AuthorizationGuard,LegacyLabStaffGuard)
 export class LaboratoryController {
   constructor(
     private readonly lab: LaboratoryService,

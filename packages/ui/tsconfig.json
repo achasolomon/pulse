@@ -3,8 +3,11 @@
     "target": "ES2023",
     "module": "nodenext",
     "moduleResolution": "nodenext",
+    "jsx": "react-jsx",
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": ["react", "react-dom"]
   },
-  "include": ["src"]
+  "include": ["src", "vitest.setup.ts", "vitest.config.ts"]
 }

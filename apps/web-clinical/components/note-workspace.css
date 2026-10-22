@@ -1,0 +1,66 @@
+.settings-drawer.clinical-note-drawer { width:min(1040px,96vw); }
+.clinical-note-drawer .settings-drawer__header { padding:18px 24px; background:#fff; }
+.clinical-note-drawer .settings-drawer__header h2 { font-size:18px; }
+.clinical-note-drawer .settings-drawer__header p { font-size:11px; margin-top:5px; }
+.clinical-note-drawer .settings-drawer__body { padding:16px 22px 22px; background:#f5f9f7; }
+.clinical-note-drawer .workflow-identity { background:#fff; border:1px solid #e0eae5; border-left:3px solid #17836c; border-radius:7px; padding:11px 14px; margin-bottom:8px; }
+.clinical-note-drawer .workflow-identity strong { font-size:14px; }
+.clinical-note-drawer .workflow-identity span { font-size:11px; }
+.note-draft-status { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px; font-size:10px; margin:0 0 14px; color:#778c80; }
+.note-draft-status > span { border-radius:12px; padding:4px 9px; background:#e5f2eb; color:#247357; }
+.note-draft-status > .note-draft-status__unsaved { background:#fff0d3; color:#91601e; }
+.note-draft-status small { font-size:10px; }
+.clinical-note-drawer .note-context-fields { display:grid; grid-template-columns:1fr 200px; gap:12px; padding:0 0 14px; margin-bottom:14px; border-bottom:1px solid #e1ebe5; }
+.clinical-note-drawer .note-context-fields label { font-size:11px; gap:5px; }
+.clinical-note-drawer .note-context-fields select { min-height:36px; padding:8px 10px; font-size:11px; }
+.note-workspace { display:grid; grid-template-columns:minmax(0,1fr) 228px; gap:14px; align-items:start; }
+.note-workspace__main { min-width:0; background:white; border:1px solid #e0eae5; border-radius:9px; overflow:hidden; }
+.note-soap-tabs { display:flex; background:#fafcfb; border-bottom:1px solid #e3ece6; }
+.note-soap-tabs button { display:flex; align-items:center; justify-content:center; gap:7px; flex:1; min-width:0; padding:12px 8px; font:inherit; font-size:11px; border:0; border-bottom:2px solid transparent; background:none; color:#7b8d82; cursor:pointer; }
+.note-soap-tabs button[aria-selected=true] { color:#086c55; background:#e9f6f0; border-bottom-color:#0b7a60; font-weight:600; }
+.note-soap-tabs button span { width:5px; height:5px; border:1px solid #ccd9d0; border-radius:50%; }
+.note-soap-tabs button .is-documented { background:#499b79; border-color:#499b79; }
+.note-writing-status { display:flex; justify-content:space-between; flex-wrap:wrap; gap:5px; padding:12px 16px 0; color:#5d7f6b; font-size:10px; }
+.note-writing-status small { color:#95a397; font-size:9px; }
+.note-soap-panel { display:grid; gap:18px; padding:16px; }
+.note-soap-panel[hidden] { display:none; }
+.note-field { display:grid; gap:8px; color:#274135; }
+.note-field > span { display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:12px; font-weight:600; }
+.note-field > span small { color:#95a394; font-size:9px; font-weight:400; }
+.clinical-note-drawer .note-field input { width:100%; min-height:40px; padding:10px 12px; border:1px solid #dce7df; border-radius:6px; font:inherit; font-size:12px; color:#304d3a; }
+.clinical-note-drawer .note-field textarea { min-height:230px; padding:12px; border-color:#dce7df; border-radius:6px; font-size:13px; line-height:1.9; background:#fff; }
+.note-field input::placeholder, .note-field textarea::placeholder { color:#9ca99e; }
+.note-section-prompts { border-top:1px solid #edf2ee; padding-top:14px; }
+.note-section-prompts h3 { font-size:11px; color:#405f48; margin:0; }
+.note-section-prompts p { font-size:10px; color:#96a396; margin:5px 0 9px; }
+.note-section-prompts > div { display:flex; gap:6px; flex-wrap:wrap; }
+.note-section-prompts button { font:inherit; font-size:10px; color:#5d8068; background:#f6faf7; border:1px solid #e2ece4; border-radius:5px; padding:7px 9px; cursor:pointer; }
+.note-workspace__rail { display:grid; gap:12px; min-width:0; }
+.note-workspace__rail > section { background:#fff; border:1px solid #e0eae5; border-radius:8px; padding:12px; min-width:0; }
+.note-workspace__rail h3 { display:flex; align-items:center; gap:7px; font-size:12px; color:#365a40; margin:0 0 10px; }
+.note-template-search input { width:100%; min-height:33px; border:1px solid #e1eae3; border-radius:5px; padding:7px 9px; font:inherit; font-size:10px; }
+.note-template-list, .note-insert-list { display:grid; gap:4px; margin-top:8px; }
+.note-template-list button, .note-insert-list button { display:flex; align-items:center; gap:7px; text-align:left; border:0; border-radius:5px; background:#f8faf9; color:#647f6c; padding:9px 7px; font:inherit; font-size:10px; cursor:pointer; }
+.note-template-list button[aria-pressed=true] { background:#def0e6; color:#126b47; }
+.note-insert-list button span { margin-left:auto; }
+.note-rail-hint { font-size:10px; line-height:1.7; color:#93a194; margin:8px 0 0; }
+.note-workspace__rail pre { white-space:pre-wrap; overflow-wrap:anywhere; font:inherit; font-size:10px; line-height:1.8; color:#68836e; background:#f8faf8; border:1px solid #eaf0eb; padding:8px; border-radius:5px; max-height:230px; overflow:auto; }
+.note-workspace__rail .note-tool-apply { width:100%; padding:9px; font:inherit; font-size:10px; background:#107253; color:#fff; border:0; border-radius:5px; cursor:pointer; }
+.note-context-preview label { display:grid; gap:5px; font-size:10px; color:#6f8975; margin-bottom:8px; }
+.note-context-preview select { padding:6px; border:1px solid #e0e9e2; border-radius:5px; font:inherit; font-size:11px; }
+.note-tool-error { font-size:11px; color:#ab4838; line-height:1.6; }
+.clinical-note-drawer .settings-drawer__footer { background:#fff; padding:13px 22px; }
+.clinical-note-drawer .settings-drawer__footer .pulse-btn { min-height:37px; font-size:12px; }
+.note-workspace button:focus-visible, .note-workspace input:focus-visible, .note-workspace textarea:focus-visible { outline:2px solid #168b7c; outline-offset:2px; }
+.note-workspace button:disabled { opacity:.5; cursor:default; }
+@media(max-width:700px) { .settings-drawer.clinical-note-drawer { width:100%; } .clinical-note-drawer .settings-drawer__header { padding:15px 16px; } .clinical-note-drawer .settings-drawer__body { padding:12px; } .clinical-note-drawer .note-context-fields { grid-template-columns:1fr; gap:9px; } .note-workspace { grid-template-columns:minmax(0,1fr); } .note-workspace__rail { grid-template-columns:1fr 1fr; } .note-workspace__rail > p, .note-workspace__rail > .note-template-preview, .note-workspace__rail > .note-context-preview { grid-column:1 / -1; } .note-soap-panel { padding:13px; gap:14px; } .note-soap-tabs button { padding:12px 5px; font-size:10px; } .note-soap-tabs button span { display:none; } .clinical-note-drawer .note-field textarea { font-size:16px; min-height:220px; } .clinical-note-drawer .note-field input { font-size:16px; } .note-field > span { font-size:11px; } .clinical-note-drawer .settings-drawer__footer { padding:12px; } }
+.note-writing-tools { display:flex; align-items:center; flex-wrap:wrap; gap:8px; padding:8px 14px; border-bottom:1px solid #edf2ee; background:#fcfdfc; }
+.note-writing-tools button { border:1px solid #e2eae4; background:#fff; border-radius:4px; color:#63816b; padding:5px 8px; font:inherit; font-size:10px; cursor:pointer; }
+.note-writing-tools > span { margin-left:auto; font-size:9px; color:#a0ada1; }
+.clinical-note-drawer .settings-drawer__header { padding-top:14px; padding-bottom:14px; }
+.clinical-note-drawer .workflow-identity { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 16px; padding:10px 13px; }
+.clinical-note-drawer .workflow-identity strong { grid-column:1; }
+.clinical-note-drawer .workflow-identity span:nth-child(2) { grid-column:1; }
+.clinical-note-drawer .workflow-identity span:last-child { grid-column:2; grid-row:1 / span 2; align-self:center; text-align:right; }
+.clinical-note-drawer .note-field textarea { min-height:180px; }
+@media(max-width:700px) { .clinical-note-drawer .workflow-identity { grid-template-columns:1fr; } .clinical-note-drawer .workflow-identity span:last-child { grid-column:1; grid-row:auto; text-align:left; } }

@@ -91,7 +91,7 @@ export class KyselyCredentialRepository implements CredentialRepository {
     const r = await this.db
       .selectFrom('iam.session as s')
       .innerJoin('iam.credential as c', 'c.id', 's.credential_id')
-      .select(['s.id', 's.credential_id', 's.person_id', 'c.status'])
+      .select(['s.id', 's.credential_id', 's.person_id', 's.expires_at', 'c.status'])
       .where('s.token_hash', '=', tokenHash)
       .where('s.revoked_at', 'is', null)
       .where('s.expires_at', '>', new Date())
@@ -102,6 +102,7 @@ export class KyselyCredentialRepository implements CredentialRepository {
       credentialId: r.credential_id,
       ...(r.person_id ? { personId: r.person_id } : {}),
       scopes: ['staff'],
+      expiresAt: r.expires_at,
     };
   }
 

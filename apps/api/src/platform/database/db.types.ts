@@ -124,6 +124,8 @@ export interface BreakGlassGrantRow {
 }
 
 export interface PatientRow {
+  contact_phone: ColumnType<string | null,string | null | undefined,string | null>;
+  contact_address: ColumnType<string | null,string | null | undefined,string | null>;
   id: Generated<string>;
   family_name: string;
   given_name: string;
@@ -192,6 +194,7 @@ export interface AppointmentRow {
 }
 
 export interface ObservationRow {
+  recorded_by: ColumnType<string | null,string | null | undefined,string | null>;
   id: Generated<string>;
   patient_id: string;
   encounter_id: string | null;
@@ -205,6 +208,10 @@ export interface ObservationRow {
 }
 
 export interface NoteRow {
+  rich_text: Generated<unknown>;
+  note_type: Generated<string>;
+  version: Generated<number>;
+  updated_at: Generated<Date>;
   id: Generated<string>;
   patient_id: string;
   encounter_id: string;
@@ -220,6 +227,7 @@ export interface NoteRow {
 }
 
 export interface NoteAddendumRow {
+  author_id: ColumnType<string|null,string|null|undefined,string|null>;
   id: Generated<string>;
   note_id: string;
   text: string;
@@ -227,6 +235,13 @@ export interface NoteAddendumRow {
 }
 
 export interface EntryRow {
+  verification_status: Generated<string | null>;
+  recorded_by: Generated<string | null>;
+  version: Generated<number>;
+  resolved_by: Generated<string | null>;
+  resolved_at: Generated<Date | null>;
+  resolution_reason: Generated<string | null>;
+  resolution_encounter_id: Generated<string | null>;
   id: Generated<string>;
   patient_id: string;
   encounter_id: string | null;
@@ -239,6 +254,29 @@ export interface EntryRow {
   created_at: Generated<Date>;
 }
 
+export interface AllergyDetailRow {
+  entry_id:string;
+  category:string;
+  allergy_type:string;
+  reaction:string;
+  severity:string;
+  criticality:string;
+  information_source:string;
+  correction_reason:Generated<string|null>;
+  corrected_by:Generated<string|null>;
+  corrected_at:Generated<Date|null>;
+  correction_encounter_id:Generated<string|null>;
+}
+export interface AllergyReviewRow {
+  id:Generated<string>;
+  patient_id:string;
+  encounter_id:string;
+  status:string;
+  information_source:string;
+  reason:string;
+  reviewed_by:string;
+  reviewed_at:Generated<Date>;
+}
 export interface LabTestRow {
   id: Generated<string>;
   code: string;
@@ -250,6 +288,10 @@ export interface LabTestRow {
 }
 
 export interface LabOrderRow {
+  ordered_by:Generated<string|null>;
+  version:Generated<number>;
+  cancelled_by:Generated<string|null>;
+  cancelled_at:Generated<Date|null>;
   id: Generated<string>;
   patient_id: string;
   encounter_id: string;
@@ -267,6 +309,8 @@ export interface LabOrderRow {
 }
 
 export interface LabSpecimenRow {
+  collected_by:Generated<string|null>;
+  identity_confirmed:Generated<boolean|null>;
   id: Generated<string>;
   order_id: string;
   container: string;
@@ -284,6 +328,37 @@ export interface LabResultRow {
   flag: string | null;
   version: number;
   created_at: Generated<Date>;
+  recorded_by: string | null;
+  effective_at: Date | null;
+  source: string | null;
+}
+export interface LabCriticalCaseRow {
+  order_id: string;
+  facility_id: string;
+  recipient_id: string;
+  confirmed_by: string;
+  order_version: number;
+  due_at: Date;
+  created_at: Generated<Date>;
+  acknowledged_by: string | null;
+  acknowledged_at: Date | null;
+  version: Generated<number>;
+}
+export interface LabCriticalContactRow {
+  id: Generated<string>;
+  order_id: string;
+  actor_id: string;
+  recipient_id: string;
+  channel: 'phone' | 'in-person';
+  outcome: 'unreachable' | 'reached';
+  read_back: boolean;
+  occurred_at: Date;
+  created_at: Generated<Date>;
+}
+export interface LabCriticalBackupRow {
+  id:Generated<string>;order_id:string;recipient_id:string;configured_by:string;reason:string;
+  mode:'immediate'|'at-deadline';status:'scheduled'|'active'|'blocked'|'cancelled';
+  created_at:Generated<Date>;activated_at:Date|null;decided_at:Date|null;decision:string|null;
 }
 
 export interface ImagingOrderRow {
@@ -298,7 +373,14 @@ export interface ImagingOrderRow {
   status: ColumnType<string, string | undefined, string>;
   cancel_reason: string | null;
   created_at: Generated<Date>;
+  procedure_id:string|null;procedure_version:number|null;ordered_by:string|null;
+  cancelled_by:string|null;cancelled_at:Date|null;version:Generated<number>;safety_context:Generated<string>;
 }
+export interface ImagingProcedureRow {
+  id:Generated<string>;code:string;name:string;modality:string;body_region:string;
+  laterality_policy:'required'|'optional'|'na';instructions:Generated<string>;version:Generated<number>;active:Generated<boolean>;created_at:Generated<Date>;
+}
+export interface ImagingFacilityProcedureRow {facility_id:string;procedure_id:string;active:Generated<boolean>}
 
 export interface ImagingStudyRow {
   id: Generated<string>;
@@ -424,6 +506,8 @@ export interface PurchaseOrderRow {
 export interface WorkflowTaskRow {
   id: Generated<string>;
   kind: string;
+  assigned_person_id: ColumnType<string | null, string | null | undefined, string | null>;
+  created_by: ColumnType<string | null, string | null | undefined, string | null>;
   patient_id: string | null;
   facility_id: string;
   payload: ColumnType<unknown, string, string>;
@@ -439,6 +523,24 @@ export interface NotificationRow {
   body: string;
   status: ColumnType<string, string | undefined, string>;
   created_at: Generated<Date>;
+}
+
+export interface StaffNotificationRow {
+  id: Generated<string>;
+  organization_id: string;
+  facility_id: string;
+  recipient_person_id: string;
+  event_id: string;
+  task_id: string;
+  category: Generated<'task'>;
+  priority: Generated<'normal'>;
+  read_at: ColumnType<Date | null, Date | null | undefined, Date | null>;
+  created_at: Generated<Date>;
+}
+export interface StaffNotificationDeliveryRow {
+  event_id: string;
+  processed_at: Generated<Date>;
+  outcome: 'delivered' | 'recipient_unavailable';
 }
 
 export interface DocumentRow {
@@ -711,6 +813,8 @@ export interface PortalProxyRow {
 }
 
 export interface StaffCredentialRow {
+  recovery_email: ColumnType<string | null, string | null | undefined, string | null>;
+  recovery_email_verified_at: ColumnType<Date | null, Date | null | undefined, Date | null>;
   id: Generated<string>;
   person_id: string | null;
   account_name: string | null;
@@ -1240,6 +1344,7 @@ export interface FindingLinkRow {
 }
 
 export interface PulseDatabase {
+  'iam.recovery_request': { id: Generated<string>; credential_id: string; purpose: 'password_reset' | 'verify_email'; email: string; token_hash: string; mail_token_encrypted: string; expires_at: Date; used_at: ColumnType<Date | null, Date | null | undefined, Date | null>; delivered_at: ColumnType<Date | null, Date | null | undefined, Date | null>; created_at: Generated<Date> };
   'integration.outbox': OutboxRow;
   'integration.inbox': InboxRow;
   'audit.audit_event': AuditEventRow;
@@ -1264,11 +1369,21 @@ export interface PulseDatabase {
   'clin.note': NoteRow;
   'clin.note_addendum': NoteAddendumRow;
   'clin.entry': EntryRow;
+  'clin.allergy_detail': AllergyDetailRow;
+  'clin.allergy_review': AllergyReviewRow;
   'lab.test': LabTestRow;
+  'lab.facility_test': {facility_id:string;test_id:string;active:Generated<boolean>};
   'lab.lab_order': LabOrderRow;
   'lab.specimen': LabSpecimenRow;
+  'lab.specimen_identity': {specimen_id:string;facility_id:string;label:string};
+  'lab.specimen_accession': {specimen_id:string;facility_id:string;accession_number:string;received_at:Date;received_by:string;identity_confirmed:boolean;created_at:Generated<Date>};
   'lab.result': LabResultRow;
+  'lab.critical_case': LabCriticalCaseRow;
+  'lab.critical_contact': LabCriticalContactRow;
+  'lab.critical_backup': LabCriticalBackupRow;
   'img.img_order': ImagingOrderRow;
+  'img.procedure':ImagingProcedureRow;
+  'img.facility_procedure':ImagingFacilityProcedureRow;
   'img.study': ImagingStudyRow;
   'img.report': ImagingReportRow;
   'med.medication': MedicationRow;
@@ -1283,6 +1398,8 @@ export interface PulseDatabase {
   'inv.purchase_order': PurchaseOrderRow;
   'workflow.task': WorkflowTaskRow;
   'workflow.notification': NotificationRow;
+  'workflow.staff_notification': StaffNotificationRow;
+  'workflow.staff_notification_delivery': StaffNotificationDeliveryRow;
   'docs.document': DocumentRow;
   'rev.service': RevenueServiceRow;
   'rev.charge': ChargeRow;

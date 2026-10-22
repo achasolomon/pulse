@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: pulse
       POSTGRES_DB: pulse
     ports:
-      - "5432:5432"
+      - "127.0.0.1:${PULSE_POSTGRES_PORT:-5436}:5432"
     volumes:
       - pulse-pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -43,8 +43,8 @@ services:
     container_name: pulse-mailhog
     restart: unless-stopped
     ports:
-      - "1025:1025"
-      - "8025:8025"
+      - "127.0.0.1:${PULSE_MAIL_SMTP_PORT:-1026}:1025"
+      - "127.0.0.1:${PULSE_MAIL_UI_PORT:-8026}:8025"
 
 volumes:
   pulse-pgdata:

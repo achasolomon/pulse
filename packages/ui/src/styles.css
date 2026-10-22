@@ -1,0 +1,371 @@
+/* @pulse/ui primitive styles — token-driven (UX-001 §12–§28). Requires the
+   token custom properties to be in scope (pulseTokensCss injected at app root). */
+
+/* Focus: always visible (UX-001 §30) */
+.pulse-focus:focus-visible {
+  outline: var(--pulse-border-thick, 2px) solid var(--pulse-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Button */
+.pulse-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pulse-space-2);
+  min-height: 36px;
+  padding: 0 var(--pulse-space-4);
+  border-radius: var(--pulse-radius-md);
+  border: var(--pulse-border-thin) solid transparent;
+  font-family: var(--pulse-font-primary);
+  font-size: var(--pulse-text-md);
+  font-weight: var(--pulse-weight-semibold);
+  cursor: pointer;
+  transition: background var(--pulse-motion-fast) var(--pulse-motion-ease),
+    border-color var(--pulse-motion-fast) var(--pulse-motion-ease);
+}
+.pulse-btn:focus-visible {
+  outline: 2px solid var(--pulse-focus-ring);
+  outline-offset: 2px;
+}
+.pulse-btn:disabled,
+.pulse-btn[aria-busy='true'] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.pulse-btn--primary {
+  background: var(--pulse-deep-teal);
+  color: var(--pulse-on-teal);
+}
+.pulse-btn--primary:hover:not(:disabled) {
+  background: var(--pulse-deep-teal-hover);
+}
+.pulse-btn--secondary {
+  background: var(--pulse-surface);
+  color: var(--pulse-deep-teal);
+  border-color: var(--pulse-border-strong);
+}
+.pulse-btn--secondary:hover:not(:disabled) {
+  background: var(--pulse-soft-sage);
+}
+.pulse-btn--danger {
+  background: var(--pulse-error);
+  color: #fff;
+}
+.pulse-btn--danger:hover:not(:disabled) {
+  filter: brightness(0.92);
+}
+.pulse-btn--sm {
+  min-height: 28px;
+  padding: 0 var(--pulse-space-3);
+  font-size: var(--pulse-text-sm);
+}
+
+/* Fields */
+.pulse-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pulse-space-1);
+  font-family: var(--pulse-font-primary);
+}
+.pulse-field__label {
+  font-size: var(--pulse-text-sm);
+  font-weight: var(--pulse-weight-medium);
+  color: var(--pulse-ink);
+}
+.pulse-field__hint {
+  font-size: var(--pulse-text-xs);
+  color: var(--pulse-slate);
+}
+.pulse-field__error {
+  font-size: var(--pulse-text-xs);
+  color: var(--pulse-error);
+  font-weight: var(--pulse-weight-medium);
+}
+.pulse-input,
+.pulse-select,
+.pulse-textarea {
+  min-height: 36px;
+  padding: var(--pulse-space-2) var(--pulse-space-3);
+  border: var(--pulse-border-thin) solid var(--pulse-border-strong);
+  border-radius: var(--pulse-radius-md);
+  background: var(--pulse-surface);
+  color: var(--pulse-ink);
+  font-family: var(--pulse-font-primary);
+  font-size: var(--pulse-text-md);
+}
+.pulse-input:focus-visible,
+.pulse-select:focus-visible,
+.pulse-textarea:focus-visible {
+  outline: 2px solid var(--pulse-focus-ring);
+  outline-offset: 1px;
+}
+.pulse-input[aria-invalid='true'],
+.pulse-select[aria-invalid='true'],
+.pulse-textarea[aria-invalid='true'] {
+  border-color: var(--pulse-error);
+}
+
+/* Card */
+.pulse-card {
+  background: var(--pulse-surface);
+  border: var(--pulse-border-thin) solid var(--pulse-border);
+  border-radius: var(--pulse-radius-lg);
+  padding: var(--pulse-space-4);
+  font-family: var(--pulse-font-primary);
+}
+.pulse-card__title {
+  margin: 0 0 var(--pulse-space-2);
+  font-family: var(--pulse-font-secondary);
+  font-size: var(--pulse-text-lg);
+  font-weight: var(--pulse-weight-semibold);
+  color: var(--pulse-ink);
+}
+
+/* Status badge — icon + text, never colour alone (UX-001 §14/§23) */
+.pulse-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pulse-space-1);
+  padding: 2px var(--pulse-space-2);
+  border-radius: var(--pulse-radius-full);
+  font-family: var(--pulse-font-primary);
+  font-size: var(--pulse-text-xs);
+  font-weight: var(--pulse-weight-semibold);
+  line-height: 1.6;
+  white-space: nowrap;
+}
+.pulse-badge__icon {
+  display: inline-flex;
+  width: 12px;
+  height: 12px;
+  flex: none;
+}
+.pulse-badge--neutral {
+  background: var(--pulse-soft-sage);
+  color: var(--pulse-ink);
+}
+.pulse-badge--info {
+  background: color-mix(in srgb, var(--pulse-info) 12%, white);
+  color: var(--pulse-info);
+}
+.pulse-badge--success {
+  background: color-mix(in srgb, var(--pulse-success) 12%, white);
+  color: var(--pulse-success);
+}
+.pulse-badge--warning {
+  background: color-mix(in srgb, var(--pulse-warning) 16%, white);
+  color: #92400e;
+}
+.pulse-badge--error {
+  background: color-mix(in srgb, var(--pulse-error) 12%, white);
+  color: var(--pulse-error);
+}
+
+/* Alert */
+.pulse-alert {
+  display: flex;
+  gap: var(--pulse-space-3);
+  padding: var(--pulse-space-3) var(--pulse-space-4);
+  border-radius: var(--pulse-radius-md);
+  border: var(--pulse-border-thin) solid var(--pulse-border);
+  background: var(--pulse-surface);
+  font-family: var(--pulse-font-primary);
+  font-size: var(--pulse-text-md);
+}
+.pulse-alert__icon {
+  flex: none;
+  margin-top: 2px;
+}
+.pulse-alert--info {
+  border-left: 4px solid var(--pulse-info);
+}
+.pulse-alert--success {
+  border-left: 4px solid var(--pulse-success);
+}
+.pulse-alert--warning {
+  border-left: 4px solid var(--pulse-warning);
+}
+.pulse-alert--error {
+  border-left: 4px solid var(--pulse-error);
+}
+.pulse-alert__title {
+  margin: 0 0 2px;
+  font-weight: var(--pulse-weight-semibold);
+}
+
+/* States */
+.pulse-empty,
+.pulse-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--pulse-space-2);
+  padding: var(--pulse-space-8) var(--pulse-space-4);
+  text-align: center;
+  color: var(--pulse-slate);
+  font-family: var(--pulse-font-primary);
+}
+.pulse-empty__title,
+.pulse-error-state__title {
+  margin: 0;
+  font-size: var(--pulse-text-lg);
+  font-weight: var(--pulse-weight-semibold);
+  color: var(--pulse-ink);
+}
+.pulse-skeleton {
+  display: block;
+  border-radius: var(--pulse-radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--pulse-soft-sage) 25%,
+    var(--pulse-background) 50%,
+    var(--pulse-soft-sage) 75%
+  );
+  background-size: 200% 100%;
+  animation: pulse-skeleton-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes pulse-skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pulse-skeleton {
+    animation: none;
+  }
+}
+
+/* Table */
+.pulse-table-wrap {
+  overflow-x: auto;
+  background: var(--pulse-surface);
+  border: var(--pulse-border-thin) solid var(--pulse-border);
+  border-radius: var(--pulse-radius-lg);
+}
+.pulse-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--pulse-font-primary);
+  font-size: var(--pulse-text-md);
+}
+.pulse-table caption {
+  padding: var(--pulse-space-3) var(--pulse-space-4);
+  text-align: left;
+  font-weight: var(--pulse-weight-semibold);
+  color: var(--pulse-ink);
+}
+.pulse-table th {
+  position: sticky;
+  top: 0;
+  background: var(--pulse-background);
+  padding: var(--pulse-space-2) var(--pulse-space-3);
+  text-align: left;
+  font-size: var(--pulse-text-xs);
+  font-weight: var(--pulse-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--pulse-slate);
+  border-bottom: var(--pulse-border-thin) solid var(--pulse-border);
+}
+.pulse-table td {
+  padding: var(--pulse-space-3);
+  border-bottom: var(--pulse-border-thin) solid var(--pulse-border);
+  color: var(--pulse-ink);
+  vertical-align: middle;
+}
+.pulse-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Patient context banner (UX-001 §6) */
+.pulse-patient-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--pulse-space-4);
+  padding: var(--pulse-space-3) var(--pulse-space-5);
+  background: var(--pulse-surface);
+  border-bottom: var(--pulse-border-thin) solid var(--pulse-border-strong);
+  font-family: var(--pulse-font-primary);
+}
+.pulse-patient-banner--empty {
+  color: var(--pulse-slate);
+  font-size: var(--pulse-text-sm);
+  background: var(--pulse-background);
+  border-bottom-style: dashed;
+}
+.pulse-patient-banner__name {
+  font-size: var(--pulse-text-lg);
+  font-weight: var(--pulse-weight-bold);
+  color: var(--pulse-ink);
+}
+.pulse-patient-banner__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pulse-space-1) var(--pulse-space-3);
+  font-size: var(--pulse-text-sm);
+  color: var(--pulse-slate);
+}
+.pulse-patient-banner__id {
+  font-family: var(--pulse-font-mono);
+  font-size: var(--pulse-text-sm);
+  color: var(--pulse-ink);
+}
+
+/* Modal */
+.pulse-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--pulse-z-modal);
+  background: var(--pulse-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--pulse-space-4);
+}
+.pulse-modal {
+  background: var(--pulse-surface);
+  border-radius: var(--pulse-radius-xl);
+  box-shadow: var(--pulse-elevation-3);
+  width: min(560px, 100%);
+  max-height: 85vh;
+  overflow: auto;
+  padding: var(--pulse-space-5);
+  font-family: var(--pulse-font-primary);
+}
+.pulse-modal__title {
+  margin: 0 0 var(--pulse-space-3);
+  font-family: var(--pulse-font-secondary);
+  font-size: var(--pulse-text-xl);
+  color: var(--pulse-ink);
+}
+.pulse-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--pulse-space-2);
+  margin-top: var(--pulse-space-5);
+}
+
+/* Skip link */
+.pulse-skip-link {
+  position: absolute;
+  left: var(--pulse-space-2);
+  top: -100px;
+  z-index: var(--pulse-z-toast);
+  padding: var(--pulse-space-2) var(--pulse-space-4);
+  background: var(--pulse-deep-teal);
+  color: var(--pulse-on-teal);
+  border-radius: var(--pulse-radius-md);
+  font-family: var(--pulse-font-primary);
+  font-weight: var(--pulse-weight-semibold);
+  text-decoration: none;
+  transition: top var(--pulse-motion-fast) var(--pulse-motion-ease);
+}
+.pulse-skip-link:focus {
+  top: var(--pulse-space-2);
+  outline: 2px solid var(--pulse-on-teal);
+  outline-offset: 2px;
+}

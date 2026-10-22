@@ -62,6 +62,7 @@ export class AuthorizationGuard implements CanActivate {
     const req = context.switchToHttp().getRequest<
       Request & {
         requestContext?: {
+          tenantId?: string;
           facilityId?: string;
           patientId?: string;
           departmentId?: string;
@@ -80,6 +81,11 @@ export class AuthorizationGuard implements CanActivate {
     }
     const personId = await this.resolvePerson(req);
     const dbMembership = await this.memberships.findActive(personId, facilityId);
+    const authHeader = req.headers['authorization'];
+    const staffSession = typeof authHeader === 'string' && authHeader.startsWith('Bearer staff_');
+    if (staffSession && (!dbMembership || dbMembership.organizationId !== req.requestContext?.tenantId)) {
+      throw new ForbiddenException({ code: 'ACCESS_DENIED', message: 'Denied: no active membership in the selected organization and facility' });
+    }
     const membership = dbMembership ?? this.demoMembership(req, personId, facilityId);
     const careRelationship = await this.hasCareRelationship(req, personId, facilityId);
     const breakGlassRecentGrants = req.requestContext?.breakGlass
@@ -162,7 +168,7 @@ export class AuthorizationGuard implements CanActivate {
       }
       return session.personId;
     }
-    if (process.env.ALLOW_DEMO_AUTH !== 'true') {
+    if (process.env.ALLOW_DEMO_AUTH !== 'true' || process.env.NODE_ENV === 'production') {
       throw new ForbiddenException({
         code: 'DEMO_DISABLED',
         message: 'Demo auth is disabled; present a staff session',
