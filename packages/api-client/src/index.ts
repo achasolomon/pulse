@@ -26,3 +26,8 @@ export type {StaffAllergy,StaffAllergyRecord,StaffAllergyInput,StaffAllergyRevie
 export type {StaffLabTest,StaffLabOrder,StaffLabOrderInput,StaffLabCancellation} from '@pulse/api-contracts';
 export type {StaffImagingProcedure,StaffImagingOrder,StaffImagingOrderInput} from '@pulse/api-contracts';
 export type {StaffLabDutyOrder,StaffLabQueuePage,StaffLabCollection,StaffLabAccession,StaffLabSpecimen} from '@pulse/api-contracts';
+export type {StaffImagingDutyDetail,StaffImagingProtocolInput,StaffImagingProtocolTemplate} from '@pulse/api-contracts';
+export type {StaffImagingSlot,StaffImagingScheduleInput} from '@pulse/api-contracts';
+export type {StaffImagingAcquisition,StaffImagingAcquisitionInput,StaffImagingAcquisitionConfirm} from '@pulse/api-contracts';
+export type {StaffImagingReportContent,StaffImagingReportInput,StaffImagingReportSignoff,StaffImagingReporting} from '@pulse/api-contracts';
+export type {StaffImagingHandoff,StaffImagingHandoffDetail} from '@pulse/api-contracts';

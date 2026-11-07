@@ -30,7 +30,8 @@
     "lib",
     "middleware.ts",
     "src",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "tmp/ux-review/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

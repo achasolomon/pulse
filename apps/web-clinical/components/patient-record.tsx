@@ -1,4 +1,5 @@
 "use client";
+import {workflowStatusLabel} from '../lib/workflow-language.mjs';
 import { useEffect, useState, useRef } from "react";
 import { Alert, Button } from "@pulse/ui";
 import {
@@ -82,7 +83,7 @@ const sections: {
   },
   {
     id: "investigations",
-    label: "Investigations",
+    label: "Tests & results",
     description:
       "Laboratory and imaging orders with recorded status, verified laboratory findings and final imaging reports. Unverified findings and draft reports are withheld.",
     privileges: ["lab:read", "imaging:view"],
@@ -115,7 +116,7 @@ function time(value: string) {
   }).format(new Date(value));
 }
 function human(value: string) {
-  return labels[value] ?? value.replaceAll("-", " ").replaceAll("_", " ");
+  return labels[value] ?? workflowStatusLabel(value);
 }
 
 function HistorySection({
@@ -628,7 +629,7 @@ export function PatientRecord({
               <Button onClick={() => setNoteEditor({})}>New note</Button>
             ) : null}
             {selected==='entries'&&privileges.includes('entry:read')&&privileges.includes('entry:write')&&privileges.includes('encounter:consult')?<Button onClick={()=>setProblemEditor({})}>Add problem or diagnosis</Button>:null}
-            {selected==='investigations'&&privileges.includes('lab:read')&&privileges.includes('lab:order')&&privileges.includes('encounter:consult')?<Button onClick={()=>setLabEditor({})}>Order laboratory test</Button>:null}
+            {selected==='investigations'&&privileges.includes('lab:read')&&privileges.includes('lab:order')&&privileges.includes('encounter:consult')?<Button onClick={()=>setLabEditor({})}>Request a lab test</Button>:null}
             {selected==='investigations'&&privileges.includes('imaging:view')&&privileges.includes('imaging:order')&&privileges.includes('encounter:consult')?<Button onClick={()=>setImagingEditor({})}>Request imaging</Button>:null}
           </div>
           {selected === "profile" ? (

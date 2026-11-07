@@ -179,7 +179,7 @@ await withStaffFixture(async ({ db, ids, loginId, secret }) => {
       mobile: false,
     });
     await login(loginId);
-    await click('Investigations');
+    await click('Tests & results');
     await click('Request imaging');
     await until('document.querySelector("[name=imagingProcedure]")');
     await evaluate('document.querySelector("[name=imagingProcedure]").click()');
@@ -204,7 +204,7 @@ await withStaffFixture(async ({ db, ids, loginId, secret }) => {
     await db.query('UPDATE img.facility_procedure SET active=false WHERE facility_id=$1 AND procedure_id=$2',[ids.facility,imagingProcedure]);await click('Place order');await until('document.querySelector("#imaging-order-drawer [role=alert]")?.textContent.includes("no longer available")');
     assert.ok(await evaluate('document.querySelector(".lab-order-review").textContent.includes("Synthetic indication after catalogue change")'));
     await click('Back');assert.equal(await evaluate('document.querySelector("[name=imagingIndication]").value'),'Synthetic indication after catalogue change');await click('Cancel');await click('Discard changes');
-    await login(nurseLogin);await click('Investigations');await until('document.querySelector(".record-history-list")');assert.equal(await evaluate('[...document.querySelectorAll("button")].some(b=>b.textContent.trim()==="Request imaging")'),false);
+    await login(nurseLogin);await click('Tests & results');await until('document.querySelector(".record-history-list")');assert.equal(await evaluate('[...document.querySelectorAll("button")].some(b=>b.textContent.trim()==="Request imaging")'),false);
     await click('Review imaging request');await until('document.querySelector("#imaging-order-drawer")');assert.equal(await evaluate('Boolean(document.querySelector("[name=imagingCancelReason]"))'),false);await click('Cancel');
     assert.equal(await evaluate('localStorage.length'),0);console.log('Imaging Chrome passed: required side selection and safety-context preservation; catalogue selection, review/attestation, outage retention, attributed ordering, history refresh, mobile cancellation/Escape protection, stale catalogue retention and nursing read-only controls.');
   } finally {

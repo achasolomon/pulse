@@ -135,7 +135,7 @@ export function ImagingOrderDrawer({
     };
   }, [patientId, orderId, loading, contexts.length, query, retry]);
   const canCancel = Boolean(
-    order?.status === "ordered" &&
+    order?.status === "ordered" && !order.protocolReviewStarted &&
     privileges.includes("imaging:cancel") &&
     privileges.includes("encounter:consult"),
   );

@@ -50,6 +50,7 @@ import { SecureExampleController } from './modules/iam/interface/secure-example.
 @Module({
   imports: [
     ConfigModule.forRoot({
+      envFilePath:process.env.NODE_ENV==='production'?'.env':['.env','../../tmp/pacs/.env.api'],
       isGlobal: true,
       ignoreEnvFile: process.env.NODE_ENV === 'test',
       load: [configuration],

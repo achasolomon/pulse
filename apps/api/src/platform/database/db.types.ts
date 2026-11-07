@@ -1384,6 +1384,15 @@ export interface PulseDatabase {
   'img.img_order': ImagingOrderRow;
   'img.procedure':ImagingProcedureRow;
   'img.facility_procedure':ImagingFacilityProcedureRow;
+  'img.protocol_template':{id:Generated<string>;code:string;name:string;procedure_id:string;version:number;instructions:string;policy_reference:string;checks:import('@pulse/api-contracts').StaffImagingProtocolTemplate['checks'];active:Generated<boolean>;created_at:Generated<Date>};
+  'img.facility_protocol':{facility_id:string;template_id:string;active:Generated<boolean>};
+  'img.schedule_resource':{id:Generated<string>;facility_id:string;code:string;name:string;modality:string;location:string;active:Generated<boolean>;blocked:Generated<boolean>;block_reason:string|null};
+  'img.schedule_slot':{id:Generated<string>;resource_id:string;procedure_id:string;starts_at:Date;ends_at:Date;active:Generated<boolean>};
+  'img.schedule_booking':{id:Generated<string>;order_id:string;slot_id:string;protocol_review_id:string;order_version:number;reason:string;booked_by:string;created_at:Generated<Date>};
+  'img.schedule_reservation':{order_id:string;slot_id:string;booking_id:string};
+  'img.booking_release':{booking_id:string;kind:'cancelled'|'rescheduled'|'no-show';reason:string;released_by:string;created_at:Generated<Date>};
+  'img.booking_arrival':{booking_id:string;identifier_methods:('full-name'|'date-of-birth'|'mrn')[];note:string;arrived_by:string;created_at:Generated<Date>};
+  'img.protocol_review':{id:Generated<string>;order_id:string;template_id:string;template_version:number;order_version:number;decision:'hold'|'approved';responses:import('@pulse/api-contracts').StaffImagingProtocolInput['responses'];reason:string;reviewed_by:string;created_at:Generated<Date>};
   'img.study': ImagingStudyRow;
   'img.report': ImagingReportRow;
   'med.medication': MedicationRow;

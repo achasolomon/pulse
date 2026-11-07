@@ -1,0 +1,21 @@
+# Local development PACS only. Credentials/config are generated in ignored tmp/pacs/.
+services:
+  orthanc:
+    image: orthancteam/orthanc:26.9.1
+    container_name: pulse-orthanc
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${PULSE_ORTHANC_HTTP_PORT:-8043}:8042"
+      - "127.0.0.1:${PULSE_ORTHANC_DICOM_PORT:-4243}:4242"
+    volumes:
+      - ../tmp/pacs/orthanc.json:/etc/orthanc/pulse.json:ro
+      - pulse-orthanc-data:/var/lib/orthanc/db
+    environment:
+      DICOM_WEB_PLUGIN_ENABLED: "true"
+    healthcheck:
+      test: ["CMD", "python3", "/probes/test-aliveness.py"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+volumes:
+  pulse-orthanc-data:

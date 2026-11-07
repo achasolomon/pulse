@@ -11,6 +11,7 @@ export function SettingsDrawer({
   footerActions,
   onBeforeClose,
   className,
+  closeLabel = 'Cancel',
 }: {
   id: string;
   title: string;
@@ -21,6 +22,7 @@ export function SettingsDrawer({
   footerActions?: ReactNode;
   onBeforeClose?: () => boolean;
   className?: string;
+  closeLabel?: string;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -100,7 +102,7 @@ export function SettingsDrawer({
           disabled={busy}
           onClick={dismiss}
         >
-          Cancel
+          {closeLabel}
         </button>
         {footerActions}
       </footer>

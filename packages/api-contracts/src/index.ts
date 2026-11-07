@@ -187,6 +187,7 @@ export interface StaffLabOrderInput {encounterId:string;testId:string;testVersio
 export interface StaffLabCancellation {expectedVersion:number;reason:string;commandKey:string}
 export interface StaffImagingProcedure {id:string;code:string;name:string;version:number;modality:string;bodyRegion:string;lateralityPolicy:'required'|'optional'|'na';instructions:string}
 export interface StaffImagingOrder {
+  protocolReviewStarted?:boolean;
   id:string;patientId:string;encounterId:string;encounter:{type:string;startedAt:string};procedure:StaffImagingProcedure|null;
   procedureCode:string;bodyRegion:string;laterality:'left'|'right'|'bilateral'|'na'|null;
   urgency:'routine'|'urgent'|'stat';indication:string;safetyContext:string;
@@ -233,6 +234,89 @@ export interface StaffCriticalAck {expectedVersion:number;attestation:true;comma
 export interface StaffLabQueuePage {
   items:StaffLabDutyOrder[];nextCursor:string|null;
   counts:Record<'ordered'|'collected'|'accessioned'|'resulted',number>;oldestPendingAt:string|null;fetchedAt:string;
+}
+export interface StaffImagingDutyRequest {
+  arrivedAt:string|null;
+  scheduledAt:string|null;
+  protocolDecision:'hold'|'approved'|null;
+  id:string;patient:{givenName:string;familyName:string;mrn:string|null;dateOfBirth:string};
+  procedureName:string;procedureCode:string;modality:string|null;bodyRegion:string|null;laterality:string|null;
+  urgency:string;status:string;orderedAt:string;encounterType:string;encounterStatus:string;
+  catalogueVersion:number|null;
+}
+export interface StaffImagingDutyDetail extends StaffImagingDutyRequest {
+  bookingHistory:StaffImagingBooking[];
+  booking:StaffImagingBooking|null;
+  indication:string|null;safetyContext:string;orderedByLabel:string|null;
+  version:number;protocolReviews:StaffImagingProtocolReview[];
+}
+export interface StaffImagingSlot {
+ id:string;startsAt:string;endsAt:string;resourceId:string;resourceName:string;location:string;modality:string;
+}
+export interface StaffImagingBooking extends StaffImagingSlot {
+ arrival:{identifierMethods:('full-name'|'date-of-birth'|'mrn')[];note:string;arrivedByLabel:string|null;arrivedAt:string}|null;
+ release:{kind:'cancelled'|'rescheduled'|'no-show';reason:string;releasedByLabel:string|null;releasedAt:string}|null;
+ bookingId:string;bookedByLabel:string|null;bookedAt:string;protocolReviewId:string;reason:string;
+}
+export interface StaffImagingScheduleInput {
+ expectedVersion:number;slotId:string;reason:string;attestation:true;commandKey:string;
+}
+export interface StaffImagingBookingChangeInput {expectedVersion:number;bookingId:string;reason:string;attestation:true;commandKey:string;}
+export interface StaffImagingArrivalInput {expectedVersion:number;bookingId:string;identifierMethods:('full-name'|'date-of-birth'|'mrn')[];note:string;attestation:true;commandKey:string;}
+export interface StaffImagingReadiness {
+ checks:{id:'request'|'booking'|'arrival'|'protocol'|'resource';label:string;met:boolean;detail:string}[];
+ prerequisitesSatisfied:boolean;checkedAt:string;
+}
+export interface StaffImagingAcquisitionTemplate extends StaffImagingProtocolTemplate {dicomModality:string;}
+export interface StaffImagingAcquisitionInput {
+ expectedVersion:number;templateId:string;templateVersion:number;responses:StaffImagingProtocolInput['responses'];
+ reason:string;attestation:true;commandKey:string;
+}
+export interface StaffImagingAcquisitionConfirm {expectedVersion:number;reason:string;attestation:true;commandKey:string;}
+export interface StaffImagingReportContent {technique:string;comparison:string;findings:string;impression:string;recommendations:string;}
+export interface StaffImagingReportInput {expectedVersion:number;expectedReportId:string|null;studyId:string;content:StaffImagingReportContent;priority:'routine'|'urgent'|'critical';reason:string;commandKey:string;}
+export interface StaffImagingReportSignoff {expectedVersion:number;reportId:string;reviewReference:string;reason:string;attestation:true;commandKey:string;}
+export interface StaffImagingHandoffInput {expectedVersion:number;reportId:string;recipientId:string;dueAt:string;policyReference:string;attestation:true;commandKey:string;}
+export interface StaffImagingContactInput {expectedCaseVersion:number;channel:'phone'|'in-person';outcome:'reached'|'unreachable';readBack:boolean;occurredAt:string;note:string;attestation:true;commandKey:string;}
+export interface StaffImagingAcknowledgeInput {expectedCaseVersion:number;note:string;attestation:true;commandKey:string;}
+export interface StaffImagingHandoff {
+ orderId:string;reportId:string;reportStatus:'draft'|'final';version:number;orderVersion:number;recipientId:string;recipientLabel:string|null;
+ priority:'urgent'|'critical';procedureName:string;patientName:string;patientId:string;patientMrn:string|null;dueAt:string;createdAt:string;policyReference:string;confirmedByLabel:string|null;
+ acknowledgedAt:string|null;acknowledgedByLabel:string|null;acknowledgementNote:string|null;
+}
+export interface StaffImagingHandoffDetail {case:StaffImagingHandoff|null;content:StaffImagingReportContent|null;
+ contacts:{id:string;channel:'phone'|'in-person';outcome:'reached'|'unreachable';readBack:boolean;occurredAt:string;note:string;actorLabel:string|null}[];}
+export interface StaffImagingReporting {
+ study:null|{id:string;studyUid:string;accession:string;modality:string};
+ reports:{id:string;version:number;status:'draft'|'final';content:StaffImagingReportContent;priority:'routine'|'urgent'|'critical';reason:string;supersedesId:string|null;authorId:string;authorLabel:string|null;createdAt:string;signoff:null|{verifiedByLabel:string|null;verifiedAt:string;reviewReference:string;reason:string}}[];
+}
+export interface StaffImagingAcquisition {
+ templates:StaffImagingAcquisitionTemplate[];
+ workItem:null|{id:string;studyUid:string;accession:string;patientId:string;issuer:string;birthDate:string|null;dicomModality:string;
+ template:StaffImagingAcquisitionTemplate;responses:StaffImagingProtocolInput['responses'];reason:string;preparedByLabel:string|null;preparedAt:string;
+ completion:null|{studyId:string;seriesCount:number;instanceCount:number;verifiedByLabel:string|null;verifiedAt:string;reason:string}};
+}
+export interface StaffPacsStatus {
+ provider:'Orthanc';configured:boolean;available:boolean;dicomWebAvailable:boolean;version:string|null;
+ reason:'not-configured'|'invalid-configuration'|'authentication-failed'|'invalid-response'|'unavailable'|null;checkedAt:string;
+}
+export interface StaffImagingRescheduleInput extends StaffImagingBookingChangeInput {slotId:string;}
+export interface StaffImagingProtocolTemplate {
+ id:string;code:string;name:string;version:number;instructions:string;policyReference:string;
+ checks:{key:string;label:string;allowNotApplicable:boolean}[];
+}
+export interface StaffImagingProtocolInput {
+ expectedVersion:number;templateId:string;templateVersion:number;decision:'hold'|'approved';
+ responses:Record<string,{outcome:'clear'|'concern'|'unknown'|'not-applicable';note:string}>;
+ reason:string;attestation:true;commandKey:string;
+}
+export interface StaffImagingProtocolReview {
+ id:string;template:StaffImagingProtocolTemplate;orderVersion:number;decision:'hold'|'approved';
+ responses:StaffImagingProtocolInput['responses'];reason:string;reviewedByLabel:string|null;reviewedAt:string;
+}
+export interface StaffImagingQueuePage {
+  items:StaffImagingDutyRequest[];nextCursor:string|null;
+  counts:Record<'ordered'|'scheduled'|'protocolled'|'acquired'|'reported',number>;fetchedAt:string;
 }
 export interface StaffLabCollection {
   expectedVersion:number;container:string;label:string;collectedAt:string;identityConfirmed:true;commandKey:string;

@@ -52,7 +52,7 @@ export function PatientActiveVisit({ patientId, personId, privileges, onDocument
   return <section className="pulse-card encounter-workspace encounter-card" aria-labelledby="current-encounter-title">
     <div className="encounter-card__heading">
       <span className="encounter-card__icon"><RecordIcon kind="notes" size={22} /></span>
-      <div className="encounter-card__title-group"><div className="encounter-card__title-row"><h2 id="current-encounter-title">Current encounter</h2>{visit ? <><span className="encounter-card__type">OPD</span><span className="encounter-card__stage"><span aria-hidden="true" />{stageLabels[visit.stage]}</span></> : null}</div>
+      <div className="encounter-card__title-group"><div className="encounter-card__title-row"><h2 id="current-encounter-title">Current visit</h2>{visit ? <><span className="encounter-card__type">OPD</span><span className="encounter-card__stage"><span aria-hidden="true" />{stageLabels[visit.stage]}</span></> : null}</div>
         {visit ? <div className="encounter-card__metadata"><span>{new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(visit.checkedInAt))}</span><span>{new Intl.DateTimeFormat("en-GB", {hour: "2-digit", minute: "2-digit"}).format(new Date(visit.checkedInAt))}</span><span>Outpatient visit</span></div> : null}
       </div>
     </div>
@@ -63,13 +63,17 @@ export function PatientActiveVisit({ patientId, personId, privileges, onDocument
         </div>
         <div className="encounter-card__progress"><h3>Encounter progress</h3><ol aria-label="Encounter progress">{["Check-in", "Vitals", "Consultation", "Complete"].map((label, index) => { const done = visit.stage === "completed" || (index === 0 && visit.stage !== "cancelled") || (index === 1 && ["vitals-recorded", "waiting-consultation", "in-consultation"].includes(visit.stage)); const current = index === progress && !done; return <li key={label} className={done ? "is-done" : current ? "is-current" : ""} aria-current={current ? "step" : undefined}><span aria-hidden="true">{done ? "✓" : ""}</span><small>{label}</small></li>; })}</ol><p className="encounter-card__next"><strong>Next</strong>{nextSteps[visit.stage]}</p></div>
       </div>
-      <div className="encounter-card__actions">
+      <div className="encounter-card__actions consultation-actions">
+        <div className="consultation-actions__primary"><span>{visit.stage==='waiting-consultation'?'Next: start consultation':canDocument?'Next: record care':'Care actions'}</span>
         {canDocument && onDocument ? <Button variant={visit.nursePersonId === personId && visit.stage !== "in-consultation" ? "secondary" : "primary"} onClick={onDocument}><RecordIcon kind="notes" size={16} />{privileges.includes("note:nursing") && visit.nursePersonId === personId ? "Write nursing note" : "Write clinical note"}</Button> : null}
         <VisitActions visit={visit} personId={personId} privileges={privileges} showChartLink={false} onChanged={() => window.location.reload()} />
-        {onReview && canReadNotes ? <Button variant="secondary" onClick={() => review("notes")}><RecordIcon kind="notes" size={16} />Encounter notes</Button> : null}
-        {onOrderLab&&visit.stage==='in-consultation'&&visit.clinicianPersonId===personId&&['lab:read','lab:order','encounter:consult'].every(p=>privileges.includes(p))?<Button variant="secondary" onClick={onOrderLab}><RecordIcon kind="investigations" size={16}/>Order laboratory test</Button>:null}
-        {onReview && privileges.includes("medication:read") ? <Button variant="secondary" onClick={() => review("medications")}><RecordIcon kind="medications" size={16} />Treatment record</Button> : null}
-        {onReview && (privileges.includes("lab:read") || privileges.includes("imaging:view")) ? <Button variant="secondary" onClick={() => review("investigations")}><RecordIcon kind="investigations" size={16} />Investigations</Button> : null}
+        </div><div className="consultation-actions__secondary"><span>Tests & results</span>
+        {onOrderLab&&visit.stage==='in-consultation'&&visit.clinicianPersonId===personId&&['lab:read','lab:order','encounter:consult'].every(p=>privileges.includes(p))?<Button variant="secondary" onClick={onOrderLab}><RecordIcon kind="investigations" size={16}/>Request a lab test</Button>:null}
+        {onReview && (privileges.includes("lab:read") || privileges.includes("imaging:view")) ? <Button variant="secondary" onClick={() => review("investigations")}><RecordIcon kind="investigations" size={16} />View test results</Button> : null}
+        </div>{onReview&&(canReadNotes||privileges.includes('medication:read'))?<details className="consultation-actions__more"><summary>Notes & treatment history</summary>
+        {canReadNotes ? <Button variant="secondary" onClick={() => review("notes")}><RecordIcon kind="notes" size={16} />Visit notes</Button> : null}
+        {privileges.includes("medication:read") ? <Button variant="secondary" onClick={() => review("medications")}><RecordIcon kind="medications" size={16} />Treatment record</Button> : null}
+        </details>:null}
       </div>
     </>}
   </section>;

@@ -118,6 +118,8 @@ await withStaffFixture(async ({ db, ids, loginId, secret }) => {
       );
     };
     const click = async (text) => {
+      if(text==='Review request'){if(!await evaluate('Boolean(document.querySelector("#lab-specimen-drawer"))')){await until('document.querySelector(".lab-queue__row button")');await evaluate('document.querySelector(".lab-queue__row button").click()');}return;}
+      if(text==='Cancel'&&!await evaluate('[...document.querySelectorAll("button")].some(b=>b.textContent.trim()==="Cancel")'))text='Back to requests';
       await until(
         `[...document.querySelectorAll('button')].some(b=>(b.getAttribute('aria-label')||b.textContent.trim())===${JSON.stringify(text)}&&!b.disabled)`,
       );
@@ -167,6 +169,7 @@ await withStaffFixture(async ({ db, ids, loginId, secret }) => {
       mobile: false,
     });
     await login(loginId);
+    await call('Page.navigate',{url:'http://localhost:3018/'});await until('document.querySelector(".workspace-table tbody a")');assert.equal(await evaluate('Boolean(document.querySelector(".workspace-welcome"))'),false);const requestHref=await evaluate('document.querySelector(".workspace-table tbody a").getAttribute("href")');assert.ok(requestHref.includes('queue=laboratory&order='));await call('Page.navigate',{url:'http://localhost:3018'+requestHref});await until('document.querySelector("[name=specimenContainer]")');
     await until('document.querySelector(".lab-queue__row")');
     assert.equal(await evaluate('(async()=>{const r=await fetch("/api/auth/patients/'+patient+'/chart");return r.status;})()'),403);
     await click('Review request');await until('document.querySelector("[name=specimenContainer]")');
@@ -174,31 +177,37 @@ await withStaffFixture(async ({ db, ids, loginId, secret }) => {
     await evaluate('document.querySelector("[name=specimenIdentityConfirmed]").click()');await screenshot('lab-collection-desktop');await click('Review collection');
     await call('Network.enable');await call('Network.setBlockedURLs',{urls:['*/api/auth/laboratory/orders/*/collect']});await click('Confirm collection');await until('document.querySelector("#lab-specimen-drawer [role=alert]")');
     assert.ok(await evaluate('document.querySelector(".lab-order-review").textContent.includes("SPEC-CHROME-001")'));
-    await call('Network.setBlockedURLs',{urls:[]});await click('Confirm collection');await until('!document.querySelector("#lab-specimen-drawer")');await until('document.querySelector(".lab-queue__row")?.textContent.includes("Awaiting receipt")');
+    await call('Network.setBlockedURLs',{urls:[]});await click('Confirm collection');await until('document.querySelector("[name=accessionNumber]")');assert.equal(await evaluate('Boolean(document.querySelector("#lab-specimen-drawer"))'),true);
     let rows=(await db.query('SELECT r.status,r.version,s.collected_by,s.identity_confirmed,s.label FROM lab.lab_order r JOIN lab.specimen s ON s.order_id=r.id WHERE r.patient_id=$1',[patient])).rows;assert.equal(rows.length,1);assert.equal(rows[0].status,'collected');assert.equal(rows[0].collected_by,ids.person);assert.equal(rows[0].identity_confirmed,true);
     await screenshot('lab-queue-collected-desktop');await click('Review request');await until('document.querySelector("[name=accessionNumber]")');await fill('accessionNumber','ACC-CHROME-001');await evaluate('document.querySelector("[name=specimenIdentityConfirmed]").click()');
     await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await delay(200);assert.equal(await evaluate('document.documentElement.scrollWidth'),390);await screenshot('lab-receipt-mobile');
     await call('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});await until('document.querySelector(".note-discard-warning")');await click('Keep editing');await click('Review receipt');
-    await db.query('UPDATE lab.lab_order SET version=version+1 WHERE patient_id=$1',[patient]);await click('Confirm accession');await until('document.querySelector("#lab-specimen-drawer [role=alert]")?.textContent.includes("has changed")');assert.ok(await evaluate('document.querySelector(".lab-order-review").textContent.includes("ACC-CHROME-001")'));
-    await click('Cancel');await click('Discard changes');await click('Review request');await until('document.querySelector("[name=accessionNumber]")');await fill('accessionNumber','ACC-CHROME-001');await evaluate('document.querySelector("[name=specimenIdentityConfirmed]").click()');await click('Review receipt');await screenshot('lab-accession-review-mobile');await click('Confirm accession');
-    await until('!document.querySelector("#lab-specimen-drawer")');await until('document.querySelector(".lab-queue__row")?.textContent.includes("Ready for testing")');assert.equal(await evaluate('document.documentElement.scrollWidth'),390);
+    await db.query('UPDATE lab.lab_order SET version=version+1 WHERE patient_id=$1',[patient]);await click('Confirm receipt');await until('document.querySelector("#lab-specimen-drawer [role=alert]")?.textContent.includes("has changed")');assert.ok(await evaluate('document.querySelector(".lab-order-review").textContent.includes("ACC-CHROME-001")'));
+    await click('Cancel');await click('Discard changes');await click('Review request');await until('document.querySelector("[name=accessionNumber]")');await fill('accessionNumber','ACC-CHROME-001');await evaluate('document.querySelector("[name=specimenIdentityConfirmed]").click()');await click('Review receipt');await screenshot('lab-accession-review-mobile');await click('Confirm receipt');
+    await until('document.querySelector(".note-patient-context")?.textContent.includes("Record results")');assert.equal(await evaluate('document.documentElement.scrollWidth'),390);
     rows=(await db.query('SELECT r.status,a.received_by,a.accession_number FROM lab.lab_order r JOIN lab.specimen s ON s.order_id=r.id JOIN lab.specimen_accession a ON a.specimen_id=s.id WHERE r.patient_id=$1',[patient])).rows;assert.equal(rows[0].status,'accessioned');assert.equal(rows[0].received_by,ids.person);assert.equal(rows[0].accession_number,'ACC-CHROME-001');
 
     await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
-    await click('Review request');await until('document.querySelector("[name=resultComponent]")');
+    await click('Review request');await click('Enter results');await until('document.querySelector("[name=resultComponent]")');
     await fill('resultComponent','Synthetic bench component');await fill('resultValue','Synthetic reviewed value');await fill('resultUnit','unit');await evaluate('document.querySelector("[name=resultAttestation]").click()');
     await call('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});await until('document.querySelector(".note-discard-warning")');await click('Keep editing');
-    await evaluate('document.querySelector(".lab-results").scrollIntoView({block:"start"})');await screenshot('lab-result-entry-desktop');await click('Review component');
-    await call('Network.setBlockedURLs',{urls:['*/api/auth/laboratory/orders/*/results']});await click('Save for verification');await until('document.querySelector(".lab-results [role=alert]")');assert.ok(await evaluate('document.querySelector(".lab-results").textContent.includes("Synthetic reviewed value")'));
-    await call('Network.setBlockedURLs',{urls:[]});await click('Save for verification');await until('document.querySelector(".lab-results__list")?.textContent.includes("Synthetic reviewed value")');
+    await evaluate('document.querySelector(".lab-results").scrollIntoView({block:"start"})');await screenshot('lab-result-entry-desktop');await click('Check result');
+    await call('Network.setBlockedURLs',{urls:['*/api/auth/laboratory/orders/*/results']});await click('Save result');await until('document.querySelector(".lab-results [role=alert]")');assert.ok(await evaluate('document.querySelector(".lab-results").textContent.includes("Synthetic reviewed value")'));
+    await call('Network.setBlockedURLs',{urls:[]});await click('Save result');await until('document.querySelector(".lab-results__list")?.textContent.includes("Synthetic reviewed value")');
     assert.equal((await db.query('SELECT status FROM lab.lab_order WHERE patient_id=$1',[patient])).rows[0].status,'resulted');
     await click('Cancel');await login(nurseLogin);await until('document.querySelector(".lab-queue__row")');await click('Review request');await until('document.querySelector("[name=verificationAttestation]")');
     await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await delay(200);assert.equal(await evaluate('document.documentElement.scrollWidth'),390);
     assert.equal(await evaluate('document.querySelector("[name=resultComponent]")'),null);
-    await evaluate('document.querySelector("[name=verificationAttestation]").click()');await evaluate('document.querySelector(".lab-results__verification").scrollIntoView({block:"center"})');await screenshot('lab-result-verification-mobile');await click('Verify & publish report');
-    await until('document.querySelector(".lab-results").textContent.includes("Report verified and published")');
+    await evaluate('document.querySelector("[name=verificationAttestation]").click()');await evaluate('document.querySelector(".lab-results__verification").scrollIntoView({block:"center"})');await screenshot('lab-result-verification-mobile');await click('Verify & release results');
+    await until('document.querySelector(".lab-results").textContent.includes("Results released")');
     const report=(await db.query('SELECT status,verified_by,verified_at FROM lab.lab_order WHERE patient_id=$1',[patient])).rows[0];assert.equal(report.status,'verified');assert.equal(report.verified_by,nurse);assert.ok(report.verified_at);await evaluate('document.querySelector(".lab-results").scrollIntoView({block:"start"})');await screenshot('lab-result-final-mobile');
-    assert.equal(await evaluate('localStorage.length'),0);console.log('Laboratory results Chrome passed: collection/accession, attributed component review, outage retention/retry, separate verifier, mobile verification/publication and immutable final controls.');
+
+    await db.query("UPDATE iam.membership SET roles=ARRAY['doctor'],privileges=ARRAY['patient:read','encounter:read','encounter:consult','note:read','note:write','lab:read','lab:order','observation:read'] WHERE id=$1",[ids.membership]);
+    await db.query("INSERT INTO iam.care_assignment(person_id,patient_id,facility_id,encounter_id,kind)VALUES($1,$2,$3,$4,'synthetic usability review')",[ids.person,patient,ids.facility,encounter]);
+    const doctorLogin=await evaluate('(async()=>{const r=await fetch("/api/auth/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify('+JSON.stringify({loginId,secret})+')});if(!r.ok)return r.status;return(await fetch("/api/auth/facility",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({facilityId:'+JSON.stringify(ids.facility)+'})})).status;})()');assert.equal(doctorLogin,200);
+    await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});await call('Page.navigate',{url:'http://localhost:3018/'});await until('document.querySelector(".workspace-table tbody a")');assert.equal(await evaluate('document.querySelector(".workspace-table tbody a").getAttribute("href")'),'/patients/'+patient);await screenshot('ux-doctor-workspace-desktop');await evaluate('document.querySelector(".workspace-table tbody a").click()');await until('document.querySelector(".consultation-actions__primary")');assert.equal(await evaluate('document.querySelector(".consultation-actions__primary").textContent.includes("Write clinical note")'),true);await click('View test results');await until('document.querySelector(".record-history-list")?.textContent.includes("Synthetic reviewed value")');await screenshot('ux-doctor-results-desktop');
+    await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth'),true);await screenshot('ux-doctor-results-mobile');
+    assert.equal(await evaluate('localStorage.length'),0);console.log('Usability journey Chrome passed: direct lab request and doctor patient links, continuous collection/receipt/results, explicit next-step ownership, doctor final-result review, plus collection/accession, attributed component review, outage retention/retry, separate verifier, mobile verification/publication and immutable final controls.');
 
   } finally {
     socket?.close();

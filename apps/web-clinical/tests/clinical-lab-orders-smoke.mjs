@@ -177,8 +177,8 @@ await withStaffFixture(async ({ db, ids, loginId, secret }) => {
       mobile: false,
     });
     await login(loginId);
-    await click('Investigations');
-    await click('Order laboratory test');
+    await click('Tests & results');
+    await click('Request a lab test');
     await until('document.querySelector("[name=labTest]")');
     await evaluate('document.querySelector("[name=labTest]").click()');
     await fill('labIndication','Synthetic indication retained through review');
@@ -197,11 +197,11 @@ await withStaffFixture(async ({ db, ids, loginId, secret }) => {
     await call('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});await until('document.querySelector(".note-discard-warning")');await click('Keep editing');
     await click('Confirm cancellation');await until('!document.querySelector("#lab-order-drawer")');await until('document.querySelector(".record-history-list")?.textContent.includes("Cancelled")');
     rows=(await db.query('SELECT status,version,cancelled_by,cancel_reason FROM lab.lab_order WHERE patient_id=$1',[patient])).rows;assert.equal(rows[0].status,'cancelled');assert.equal(rows[0].version,2);assert.equal(rows[0].cancelled_by,ids.person);
-    await click('Order laboratory test');await until('document.querySelector("[name=labTest]")');await evaluate('document.querySelector("[name=labTest]").click()');await fill('labIndication','Synthetic indication after catalogue change');await click('Review order');await evaluate('document.querySelector("[name=labOrderAttestation]").click()');
+    await click('Request a lab test');await until('document.querySelector("[name=labTest]")');await evaluate('document.querySelector("[name=labTest]").click()');await fill('labIndication','Synthetic indication after catalogue change');await click('Review order');await evaluate('document.querySelector("[name=labOrderAttestation]").click()');
     await db.query('UPDATE lab.facility_test SET active=false WHERE facility_id=$1 AND test_id=$2',[ids.facility,labTest]);await click('Place order');await until('document.querySelector("#lab-order-drawer [role=alert]")?.textContent.includes("no longer available")');
     assert.ok(await evaluate('document.querySelector(".lab-order-review").textContent.includes("Synthetic indication after catalogue change")'));
     await click('Back');assert.equal(await evaluate('document.querySelector("[name=labIndication]").value'),'Synthetic indication after catalogue change');await click('Cancel');await click('Discard changes');
-    await login(nurseLogin);await click('Investigations');await until('document.querySelector(".record-history-list")');assert.equal(await evaluate('[...document.querySelectorAll("button")].some(b=>b.textContent.trim()==="Order laboratory test")'),false);
+    await login(nurseLogin);await click('Tests & results');await until('document.querySelector(".record-history-list")');assert.equal(await evaluate('[...document.querySelectorAll("button")].some(b=>b.textContent.trim()==="Request a lab test")'),false);
     await click('Review laboratory order');await until('document.querySelector("#lab-order-drawer")');assert.equal(await evaluate('Boolean(document.querySelector("[name=labCancelReason]"))'),false);await click('Cancel');
     assert.equal(await evaluate('localStorage.length'),0);console.log('Laboratory Chrome passed: catalogue selection, review/attestation, outage retention, attributed ordering, history refresh, mobile cancellation/Escape protection, stale catalogue retention and nursing read-only controls.');
   } finally {

@@ -1,10 +1,12 @@
 "use client";
 import Link from "next/link";
+import {loadCriticalCounts} from '../lib/critical-counts.js';
 import { CriticalBackupRouting } from "./critical-backup-routing.js";
 import { useEffect, useRef, useState } from "react";
 import { Alert, Button } from "@pulse/ui";
 import { ApiError, createStaffWebApi } from "@pulse/api-client";
 import { SettingsDrawer } from "./settings-drawer.js";
+import {canUseCriticalResults as allowed} from '../lib/workspace-navigation.mjs';
 const api = createStaffWebApi();
 type Detail = Awaited<ReturnType<typeof api.criticalDetail>>;
 type CriticalCase = NonNullable<Detail["case"]>;
@@ -14,11 +16,6 @@ const localNow = () => {
     .toISOString()
     .slice(0, 23);
 };
-const allowed = (p: string[]) =>
-  p.includes("lab:read") &&
-  (p.includes("lab:critical:ack") ||
-    (p.includes("lab:worklist") &&
-      (p.includes("lab:verify") || p.includes("lab:result"))));
 export function CriticalIndicator({
   facilityId,
   privileges,
@@ -40,7 +37,7 @@ export function CriticalIndicator({
       if (document.hidden || running) return;
       running = true;
       try {
-        const r = await api.criticalCount(c.signal);
+        const r = await loadCriticalCounts(privileges,c.signal);
         if (!c.signal.aborted) {
           setCounts(r);
           setFailed(false);

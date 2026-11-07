@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import {useRouter} from 'next/navigation';
 import { Alert, Button } from "@pulse/ui";
 import {
   ApiError,
@@ -7,38 +8,32 @@ import {
   type OutpatientVisit,
 } from "@pulse/api-client";
 import { VisitActions, stageLabels } from "./visit-actions.js";
+import {RadiologyWorklist} from './radiology-worklist.js';
 import {LaboratoryWorklist} from './laboratory-worklist.js';
+import {worklistTabs} from "../lib/workspace-navigation.mjs";
 const api = createStaffWebApi();
 export function ClinicalWorklists({
   personId,
+  initialQueue,
+  initialOrderId,
   facilityId,
   privileges,
 }: {
   personId: string;
+  initialQueue?: string;
+  initialOrderId?: string;
   facilityId: string;
   privileges: string[];
 }) {
-  const tabs = [
-    { id: "reception", label: "Front desk", privilege: "appointment:read" },
-    { id: "vitals", label: "Vitals", privilege: "observation:write" },
-    {
-      id: "consultation",
-      label: "Consultations",
-      privilege: "encounter:consult",
-    },
-  ].filter(
-    (tab) =>
-      privileges.includes("encounter:read") &&
-      privileges.includes(tab.privilege),
-  );
-  if(['lab:read','lab:worklist'].every(p=>privileges.includes(p)))tabs.push({id:'laboratory',label:'Laboratory',privilege:'lab:worklist'});
-  const [queue, setQueue] = useState(tabs[0]?.id ?? ""),
+  const router=useRouter();
+  const tabs = worklistTabs(privileges);
+  const [queue, setQueue] = useState(tabs.find(tab=>tab.id===initialQueue)?.id ?? tabs[0]?.id ?? ""),
     [rows, setRows] = useState<OutpatientVisit[] | null>(null),
     [error, setError] = useState<string | null>(null),
     [refresh, setRefresh] = useState(0),
     [updated, setUpdated] = useState<Date | null>(null);
   useEffect(() => {
-    if (!queue||queue==='laboratory') return;
+    if (!queue||queue==='laboratory'||queue==='radiology') return;
     let controller = new AbortController();
     let running = false;
     setError(null);
@@ -90,20 +85,20 @@ export function ClinicalWorklists({
             <button
               key={tab.id}
               aria-pressed={queue === tab.id}
-              onClick={() => { setRows(null); setQueue(tab.id); }}
+              onClick={() => { setRows(null); setQueue(tab.id); router.push(`/worklists?queue=${tab.id}`); }}
             >
               {tab.label}
             </button>
           ))}
         </div>
         <div>
-          {queue!=='laboratory'?<a href="/patients">Find patient / check in</a>:null}
+          {queue!=='laboratory'&&queue!=='radiology'?<a href="/patients">Find a patient</a>:null}
           <Button variant="secondary" onClick={() => setRefresh((n) => n + 1)}>
             Refresh
           </Button>
         </div>
       </div>
-      {queue==='laboratory'?<LaboratoryWorklist facilityId={facilityId} privileges={privileges} refreshSignal={refresh}/>:<>
+      {queue==='radiology'?<RadiologyWorklist initialOrderId={initialOrderId} onOrderClosed={()=>router.replace('/worklists?queue=radiology',{scroll:false})} facilityId={facilityId} refreshSignal={refresh} privileges={privileges}/>:queue==='laboratory'?<LaboratoryWorklist initialOrderId={initialOrderId} onOrderClosed={()=>router.replace('/worklists?queue=laboratory',{scroll:false})} personId={personId} facilityId={facilityId} privileges={privileges} refreshSignal={refresh}/>:<>
       {error ? <Alert tone="error">{error}</Alert> : null}
       {rows === null && !error ? (
         <p role="status">Loading worklist...</p>

@@ -3,10 +3,11 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Alert } from "@pulse/ui";
 import { ApiError, createStaffWebApi } from "@pulse/api-client";
 import type { PublicSession } from "../lib/session.js";
-import { DashboardIcon, MenuIcon, PatientsIcon } from "./nav-icons.js";
+import { DashboardIcon, MenuIcon, PatientsIcon, AppointmentsIcon, NursingIcon, ClinicalIcon, LaboratoryIcon, ImagingIcon, BellIcon } from "./nav-icons.js";
 import { FacilityDialog } from "./facility-dialog.js";
 import { FacilityPicker } from "./facility-picker.js";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import {workspaceNavigation,worklistTabs} from "../lib/workspace-navigation.mjs";
 import { WorkspaceSearch } from "./workspace-search.js";
 import { NotificationCentre } from "./notification-centre.js";
 import {CriticalIndicator} from './critical-followup.js';
@@ -20,6 +21,12 @@ export function Shell({
   session: PublicSession;
 }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const privileges = session.facility?.privileges ?? [];
+  const navigation = workspaceNavigation(privileges);
+  const queues = worklistTabs(privileges);
+  const activeQueue = queues.find(q=>q.id===searchParams.get("queue"))?.id ?? queues[0]?.id;
+  const icons = {dashboard:DashboardIcon,patients:PatientsIcon,appointments:AppointmentsIcon,nursing:NursingIcon,clinical:ClinicalIcon,laboratory:LaboratoryIcon,imaging:ImagingIcon,notifications:BellIcon};
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
@@ -223,66 +230,11 @@ export function Shell({
         </div>
         <nav>
           <ul className="sidebar__nav">
-            {(['lab:read','lab:worklist'].every(p=>session.facility?.privileges.includes(p)) || (session.facility?.privileges.includes("encounter:read") &&
-            ["appointment:read", "observation:write", "encounter:consult"].some(
-              (p) => session.facility?.privileges.includes(p),
-            ))) ? (
-              <li>
-                <a
-                  href="/worklists"
-                  title="Staff worklists"
-                  className={
-                    pathname === "/worklists"
-                      ? "sidebar__link sidebar__link--active"
-                      : "sidebar__link"
-                  }
-                  aria-current={pathname === "/worklists" ? "page" : undefined}
-                >
-                  <span className="sidebar__icon">
-                    <PatientsIcon size={18} />
-                  </span>
-                  <span className="sidebar__label">Staff worklists</span>
-                </a>
-              </li>
-            ) : null}
-            <li>
-              <a
-                href="/"
-                title="Workspace"
-                className={
-                  pathname === "/"
-                    ? "sidebar__link sidebar__link--active"
-                    : "sidebar__link"
-                }
-                aria-current={pathname === "/" ? "page" : undefined}
-              >
-                <span className="sidebar__icon">
-                  <DashboardIcon size={18} />
-                </span>
-                <span className="sidebar__label">Workspace</span>
-              </a>
-            </li>
-            {session.facility?.privileges.includes("patient:read") ? (
-              <li>
-                <a
-                  href="/patients"
-                  title="Patients"
-                  className={
-                    pathname.startsWith("/patients")
-                      ? "sidebar__link sidebar__link--active"
-                      : "sidebar__link"
-                  }
-                  aria-current={
-                    pathname.startsWith("/patients") ? "page" : undefined
-                  }
-                >
-                  <span className="sidebar__icon">
-                    <PatientsIcon size={18} />
-                  </span>
-                  <span className="sidebar__label">Patients</span>
-                </a>
-              </li>
-            ) : null}
+            {navigation.map(item => {
+              const Icon = icons[item.icon as keyof typeof icons];
+              const active = item.href.startsWith('/worklists') ? pathname==='/worklists' && activeQueue===item.id : item.href==='/' ? pathname==='/' : pathname===item.href || pathname.startsWith(item.href+'/');
+              return <li key={item.id}><a href={item.href} title={item.label} className={active?'sidebar__link sidebar__link--active':'sidebar__link'} aria-current={active?'page':undefined} onClick={()=>setDrawerOpen(false)}><span className="sidebar__icon"><Icon size={18}/></span><span className="sidebar__label">{item.label}</span></a></li>;
+            })}
           </ul>
         </nav>
         <nav className="sidebar__utilities" aria-label="Workspace settings">
@@ -372,16 +324,8 @@ export function Shell({
                 ["observation:read", "entry:read"].includes(p),
               )
             }
-            canUseWorklists={
-              ['lab:read','lab:worklist'].every(p=>session.facility?.privileges.includes(p)) || (!!session.facility?.privileges.includes("encounter:read") &&
-              !!session.facility?.privileges.some((p) =>
-                [
-                  "appointment:read",
-                  "observation:write",
-                  "encounter:consult",
-                ].includes(p),
-              ))
-            }
+            canUseWorklists={queues.length > 0}
+            navigation={navigation}
             canSearchPatients={
               session.facility?.privileges.includes("patient:read") ?? false
             }

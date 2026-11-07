@@ -56,6 +56,19 @@ export class ApiError extends Error {
 }
 
 const USER_MESSAGE_BY_CODE: Record<string, string> = {
+  IMAGING_HANDOFF_CHANGED:'This handoff or report changed. Your entries are retained; reload the current case before continuing.',
+  IMAGING_HANDOFF_REVIEW_REQUIRED:'Review the responsible clinician, policy-based deadline and acknowledgement evidence before confirming.',
+  IMAGING_HANDOFF_RECIPIENT_INVALID:'Select an active clinician assigned to this patient with imaging acknowledgement permission.',
+  IMAGING_HANDOFF_CONTACT_REQUIRED:'Record actual direct communication and read-back before the named clinician acknowledges.',
+  IMAGING_REPORT_PINNED:'Communication has started for this report revision. Further changes require governed correction.',
+  IMAGING_REPORT_CHANGED:'This report or request changed. Your text is retained; close and reopen the request to review the latest revision.',
+  IMAGING_REPORT_STUDY_REQUIRED:'Reporting requires the verified study linked to this request. Review acquisition before continuing.',
+  IMAGING_REPORT_CONTENT_REQUIRED:'Enter valid report content and a revision reason. Final sign-off requires findings and impression.',
+  IMAGING_REPORT_REVIEW_REQUIRED:'Record where the diagnostic images were reviewed, enter a sign-off note and confirm the attestation.',
+  IMAGING_REPORT_COMMUNICATION_HELD:'Urgent and critical report release requires recorded direct communication and explicit acknowledgement by the named clinician. The report remains held; use the approved escalation process.',
+  IMAGING_STUDY_NOT_RECEIVED:'The expected study has not arrived in Orthanc. Your entries are retained; retry when acquisition is complete.',
+  IMAGING_STUDY_IDENTITY_MISMATCH:'The received study does not match this work item. No study was attached. Reconcile the identifiers with radiology before retrying.',
+  IMAGING_STUDY_UNVERIFIED:'Orthanc could not verify the expected study. No acquisition was recorded. Your entries are retained; retry or contact support.',
   IMAGING_CATALOGUE_CHANGED:'The selected procedure or version is no longer available at this facility. Your information is kept; return to the catalogue and review a current procedure.',
   IMAGING_LATERALITY_REQUIRED:'Select the side required by this procedure before placing the request.',
   IMAGING_ORDER_PENDING:'A matching imaging request for this procedure and side is already pending. Review it before ordering again.',

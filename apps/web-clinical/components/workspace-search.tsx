@@ -15,6 +15,7 @@ export function WorkspaceSearch({
   facilityId,
   canOpenCharts = false,
   canUseWorklists = false,
+  navigation,
 }: {
   onChooseFacility: () => void;
   canSwitch: boolean;
@@ -22,6 +23,7 @@ export function WorkspaceSearch({
   facilityId?: string;
   canOpenCharts?: boolean;
   canUseWorklists?: boolean;
+  navigation?: {label:string;href:string}[];
 }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -59,15 +61,14 @@ export function WorkspaceSearch({
       controller.abort();
     };
   }, [query, open, canSearchPatients, facilityId]);
-  const pages = [
+  const pages = [...(navigation ?? [
     ...(canUseWorklists
       ? [{ label: "Staff worklists", href: "/worklists" }]
       : []),
     ...(canSearchPatients ? [{ label: "Patients", href: "/patients" }] : []),
     { label: "Notifications", href: "/notifications" },
     { label: "Workspace", href: "/" },
-    { label: "Account security", href: "/account/security" },
-  ].filter((page) =>
+  ]), { label: "Account security", href: "/account/security" }].filter((page) =>
     page.label.toLowerCase().includes(query.trim().toLowerCase()),
   );
   const facilityMatch =
